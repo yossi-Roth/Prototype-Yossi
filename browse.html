@@ -14,10 +14,10 @@
 
     /* ─── DESIGN TOKENS ─── */
     :root {
-      --primary:        #0369A1;
-      --primary-hover:  #0284C7;
-      --primary-light:  #E0F2FE;
-      --primary-border: #BAE6FD;
+      --primary:        #334155;
+      --primary-hover:  #1E293B;
+      --primary-light:  #F1F5F9;
+      --primary-border: #CBD5E1;
 
       --surface:    #FFFFFF;
       --surface-2:  #F8FAFC;
@@ -37,11 +37,11 @@
       --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
       --shadow-md: 0 4px 12px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.06);
 
-      /* Type badge colors */
-      --outcome-bg:     #D1FAE5; --outcome-text: #065F46; --outcome-border: #A7F3D0;
-      --output-bg:      #DBEAFE; --output-text:  #1E40AF; --output-border:  #BFDBFE;
-      --impact-bg:      #EDE9FE; --impact-text:  #4C1D95; --impact-border:  #DDD6FE;
-      --input-bg:       #FEF3C7; --input-text:   #78350F; --input-border:   #FDE68A;
+      /* Type badge colors — wireframe grays */
+      --outcome-bg:     #F1F5F9; --outcome-text: #1E293B; --outcome-border: #CBD5E1;
+      --output-bg:      #F8FAFC; --output-text:  #334155; --output-border:  #CBD5E1;
+      --impact-bg:      #1E293B; --impact-text:  #FFFFFF; --impact-border:  #1E293B;
+      --input-bg:       #FFFFFF; --input-text:   #64748B; --input-border:   #94A3B8;
     }
 
     /* ─── BASE ─── */
@@ -415,6 +415,7 @@
 <header class="global-nav" role="banner">
   <nav class="global-nav-inner" aria-label="ניווט ראשי">
     <ul class="nav-links" role="list">
+      <li><a href="home.html">בית</a></li>
       <li><a href="browse.html" aria-current="page">עיון</a></li>
       <li><a href="node-chart.html">מפה סמנטית</a></li>
       <li><a href="#">אודות</a></li>

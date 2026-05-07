@@ -13,10 +13,10 @@
     a { text-decoration: none; color: inherit; }
 
     :root {
-      --primary:        #0369A1;
-      --primary-hover:  #0284C7;
-      --primary-light:  #E0F2FE;
-      --primary-mid:    #0EA5E9;
+      --primary:        #334155;
+      --primary-hover:  #1E293B;
+      --primary-light:  #F1F5F9;
+      --primary-mid:    #64748B;
 
       --bg-page:        #F8FAFC;
       --bg-card:        #FFFFFF;
@@ -30,7 +30,7 @@
       --text-muted:     #94A3B8;
       --text-inverse:   #FFFFFF;
 
-      /* Node type colors */
+      /* Node type colors — keep semantic colors (the map needs them) */
       --node-domain:        #0369A1;
       --node-domain-light:  #DBEAFE;
       --node-topic:         #1D4ED8;
@@ -42,7 +42,7 @@
       --node-method:        #F1F5F9;
       --node-method-stroke: #94A3B8;
 
-      /* Link types */
+      /* Link types — keep semantic colors */
       --link-hierarchical: #94A3B8;
       --link-complementary: #0EA5E9;
       --link-alternative:  #F59E0B;
@@ -358,11 +358,12 @@
       letter-spacing: .06em;
       margin-block-end: 10px;
     }
-    .panel-type-badge.domain { background: var(--node-domain-light); color: var(--node-domain); }
-    .panel-type-badge.topic { background: var(--node-topic-light); color: var(--node-topic); }
-    .panel-type-badge.outcome { background: var(--node-outcome-light); color: var(--node-outcome); }
-    .panel-type-badge.indicator { background: var(--primary-light); color: var(--primary); }
-    .panel-type-badge.method { background: #F1F5F9; color: var(--text-secondary); }
+    /* Panel badges — wireframe (intentionally not colorful) */
+    .panel-type-badge.domain    { background: #F1F5F9; color: #334155; }
+    .panel-type-badge.topic     { background: #F1F5F9; color: #475569; }
+    .panel-type-badge.outcome   { background: #F1F5F9; color: #64748B; }
+    .panel-type-badge.indicator { background: #F1F5F9; color: #334155; }
+    .panel-type-badge.method    { background: #F1F5F9; color: #475569; }
 
     .panel-title {
       font-size: 22px;
@@ -454,9 +455,10 @@
       width: 100%;
       transform: translateY(-50%);
     }
-    .relation-line.hierarchical::before { border-block-start: 1.5px solid var(--link-hierarchical); }
-    .relation-line.complementary::before { border-block-start: 1.5px solid var(--link-complementary); }
-    .relation-line.alternative::before { border-block-start: 1.5px dashed var(--link-alternative); }
+    /* Panel relation lines — wireframe (differentiation via line style only) */
+    .relation-line.hierarchical::before { border-block-start: 1.5px solid #94A3B8; }
+    .relation-line.complementary::before { border-block-start: 1.5px solid #475569; }
+    .relation-line.alternative::before { border-block-start: 1.5px dashed #94A3B8; }
     .relation-name { flex: 1; font-weight: 500; }
     .relation-arrow { color: var(--text-muted); font-size: 14px; }
 
@@ -693,6 +695,7 @@
   <header class="global-nav" role="banner">
     <nav class="global-nav-inner" aria-label="ניווט ראשי">
       <ul class="nav-links" role="list">
+        <li><a href="home.html">בית</a></li>
         <li><a href="browse.html">עיון</a></li>
         <li><a href="node-chart.html" aria-current="page">מפה סמנטית</a></li>
         <li><a href="#">אודות</a></li>
