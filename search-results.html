@@ -95,12 +95,12 @@
       color: var(--primary);
       white-space: nowrap;
       flex-shrink: 0;
+      margin-inline-start: auto;
     }
     .nav-logo span { font-weight: 300; color: var(--text-muted); }
     .nav-links {
       display: flex;
       gap: 4px;
-      margin-inline-start: auto;
     }
     .nav-links a {
       font-size: 14px;
@@ -111,6 +111,12 @@
       transition: all .15s;
     }
     .nav-links a:hover { background: var(--bg-page); color: var(--text-primary); }
+    .nav-links a[aria-current="page"] {
+      color: var(--primary);
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
 
     /* ─── SEARCH HEADER ─── */
     .search-header {
@@ -755,12 +761,12 @@
 <!-- ══════════════ GLOBAL NAV ══════════════ -->
 <header class="global-nav" role="banner">
   <nav class="global-nav-inner" aria-label="ניווט ראשי">
-    <a href="home.html" class="nav-logo">קטלוג מדדים <span>| JDC DIDA</span></a>
     <ul class="nav-links" role="list">
       <li><a href="browse.html">עיון</a></li>
       <li><a href="node-chart.html">מפה סמנטית</a></li>
       <li><a href="#">אודות</a></li>
     </ul>
+    <a href="home.html" class="nav-logo">קטלוג מדדים <span>| JDC DIDA</span></a>
   </nav>
 </header>
 

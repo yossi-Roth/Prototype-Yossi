@@ -74,13 +74,16 @@
 
     /* ─── NAV ─── */
     .global-nav {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 100;
       background: var(--bg-card);
       border-block-end: 1px solid var(--border);
       box-shadow: var(--shadow-sm);
-      z-index: 100;
-      position: relative;
     }
     .global-nav-inner {
+      max-width: 1280px;
+      margin-inline: auto;
       padding-inline: 32px;
       padding-block: 14px;
       display: flex;
@@ -92,12 +95,13 @@
       font-weight: 700;
       color: var(--primary);
       white-space: nowrap;
+      flex-shrink: 0;
+      margin-inline-start: auto;
     }
     .nav-logo span { font-weight: 300; color: var(--text-muted); }
     .nav-links {
       display: flex;
       gap: 4px;
-      margin-inline-start: auto;
     }
     .nav-links a {
       font-size: 14px;
@@ -108,7 +112,12 @@
       transition: all .15s;
     }
     .nav-links a:hover { background: var(--bg-page); color: var(--text-primary); }
-    .nav-links a.active { color: var(--primary); background: var(--primary-light); }
+    .nav-links a[aria-current="page"] {
+      color: var(--primary);
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
 
     /* ─── PAGE HEADER ─── */
     .page-header {
@@ -681,18 +690,16 @@
 </head>
 <body>
   <!-- ─── GLOBAL NAV ─── -->
-  <nav class="global-nav">
-    <div class="global-nav-inner">
-      <a href="home.html" class="nav-logo">קטלוג מדדים <span>· JDC DIDA</span></a>
-      <div class="nav-links">
-        <a href="home.html">בית</a>
-        <a href="search-results.html">חיפוש</a>
-        <a href="browse.html">עיון</a>
-        <a href="node-chart.html" class="active" aria-current="page">מפה סמנטית</a>
-        <a href="#">אודות</a>
-      </div>
-    </div>
-  </nav>
+  <header class="global-nav" role="banner">
+    <nav class="global-nav-inner" aria-label="ניווט ראשי">
+      <ul class="nav-links" role="list">
+        <li><a href="browse.html">עיון</a></li>
+        <li><a href="node-chart.html" aria-current="page">מפה סמנטית</a></li>
+        <li><a href="#">אודות</a></li>
+      </ul>
+      <a href="home.html" class="nav-logo">קטלוג מדדים <span>| JDC DIDA</span></a>
+    </nav>
+  </header>
 
   <!-- ─── PAGE HEADER ─── -->
   <header class="page-header">
@@ -1017,13 +1024,13 @@
       return -r * 12;
     }))
     .force('center', d3.forceCenter(width()/2, height()/2))
-    .force('x', d3.forceX(width()/2).strength(0.06))
-    .force('y', d3.forceY(height()/2).strength(0.08))
+    .force('x', d3.forceX(width()/2).strength(0.035))
+    .force('y', d3.forceY(height()/2).strength(0.05))
     .force('collide', d3.forceCollide().radius(d => {
       const r = NODE_RADIUS[d.type] || 20;
       // Approximate label half-width so collisions respect the text, not just the circle
       const labelHalfWidth = (d.label || '').length * 3.8;
-      return Math.max(r, labelHalfWidth) + 8;
+      return Math.max(r, labelHalfWidth) + 16;
     }))
     .alphaDecay(0.03);
 
@@ -1584,7 +1591,7 @@
     const domains = DATA.nodes.filter(n => n.type === 'domain');
     const cx = width() / 2;
     const cy = height() / 2;
-    const radius = Math.min(width(), height()) * 0.22;
+    const radius = Math.min(width(), height()) * 0.32;
     domains.forEach((n, i) => {
       const angle = (i / domains.length) * Math.PI * 2 - Math.PI / 2;
       n.x = cx + Math.cos(angle) * radius;

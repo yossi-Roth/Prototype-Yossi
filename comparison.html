@@ -33,13 +33,51 @@
     html { font-family: var(--font); font-size: 16px; line-height: 1.65; color: var(--text-primary); background: var(--bg-page); -webkit-font-smoothing: antialiased; }
 
     /* NAV */
-    .global-nav { position: sticky; inset-block-start: 0; z-index: 200; background: var(--bg-card); border-block-end: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-    .global-nav-inner { max-width: 1280px; margin-inline: auto; padding-inline: 32px; padding-block: 14px; display: flex; align-items: center; gap: 24px; }
-    .nav-logo { font-size: 17px; font-weight: 700; color: var(--primary); white-space: nowrap; flex-shrink: 0; }
+    .global-nav {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 100;
+      background: var(--bg-card);
+      border-block-end: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .global-nav-inner {
+      max-width: 1280px;
+      margin-inline: auto;
+      padding-inline: 32px;
+      padding-block: 14px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-inline-start: auto;
+    }
     .nav-logo span { font-weight: 300; color: var(--text-muted); }
-    .nav-links { display: flex; gap: 4px; margin-inline-start: auto; }
-    .nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); padding: 6px 12px; border-radius: var(--radius-md); transition: all .15s; }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      transition: all .15s;
+    }
     .nav-links a:hover { background: var(--bg-page); color: var(--text-primary); }
+    .nav-links a[aria-current="page"] {
+      color: var(--primary);
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
 
     /* PAGE HEADER */
     .page-header { background: var(--bg-card); border-block-end: 1px solid var(--border); padding-block: 18px; padding-inline: 32px; }
@@ -152,18 +190,16 @@
 <body>
 
 <!-- NAV -->
-<nav class="global-nav" role="navigation" aria-label="ניווט ראשי">
-  <div class="global-nav-inner">
+<header class="global-nav" role="banner">
+  <nav class="global-nav-inner" aria-label="ניווט ראשי">
+    <ul class="nav-links" role="list">
+      <li><a href="browse.html">עיון</a></li>
+      <li><a href="node-chart.html">מפה סמנטית</a></li>
+      <li><a href="#">אודות</a></li>
+    </ul>
     <a href="home.html" class="nav-logo">קטלוג מדדים <span>| JDC DIDA</span></a>
-    <nav class="nav-links">
-      <a href="home.html">בית</a>
-      <a href="search-results.html">חיפוש</a>
-      <a href="browse.html">עיון</a>
-      <a href="node-chart.html">מפה סמנטית</a>
-      <a href="#">אודות</a>
-    </nav>
-  </div>
-</nav>
+  </nav>
+</header>
 
 <!-- PAGE HEADER -->
 <div class="page-header">

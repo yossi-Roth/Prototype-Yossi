@@ -85,52 +85,16 @@
       font-size: 17px;
       font-weight: 700;
       color: var(--primary);
-      text-decoration: none;
       white-space: nowrap;
       flex-shrink: 0;
+      margin-inline-start: auto;
     }
     .nav-logo span { font-weight: 300; color: var(--text-muted); }
-
-    .nav-search {
-      flex: 1;
-      max-width: 440px;
-      position: relative;
-    }
-    .nav-search input {
-      width: 100%;
-      padding-block: 8px;
-      padding-inline-start: 36px;
-      padding-inline-end: 14px;
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-full);
-      font-family: var(--font);
-      font-size: 14px;
-      background: var(--bg-page);
-      outline: none;
-      color: var(--text-primary);
-      transition: border-color .15s, box-shadow .15s;
-    }
-    .nav-search input::placeholder { color: var(--text-muted); }
-    .nav-search input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(3,105,161,.12);
-    }
-    .nav-search-icon {
-      position: absolute;
-      inset-block-start: 50%;
-      inset-inline-start: 11px;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      pointer-events: none;
-      display: flex;
-    }
     .nav-links {
       display: flex;
       gap: 4px;
-      margin-inline-start: auto;
     }
     .nav-links a {
-      text-decoration: none;
       font-size: 14px;
       font-weight: 500;
       color: var(--text-secondary);
@@ -139,6 +103,12 @@
       transition: all .15s;
     }
     .nav-links a:hover { background: var(--bg-page); color: var(--text-primary); }
+    .nav-links a[aria-current="page"] {
+      color: var(--primary);
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
 
     /* ─── PAGE GRID ─── */
     .indicator-page {
@@ -568,27 +538,12 @@
 ══════════════════════════════════════ -->
 <header class="global-nav" role="banner">
   <nav class="global-nav-inner" aria-label="ניווט ראשי">
-    <a href="home.html" class="nav-logo" aria-label="קטלוג מדדים — דף הבית">
-      קטלוג מדדים <span>| JDC DIDA</span>
-    </a>
-
-    <div class="nav-search" role="search">
-      <span class="nav-search-icon" aria-hidden="true">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-      </span>
-      <input type="search" placeholder="חפש מדד, תחום חיים או סוג תוצאה..." aria-label="חיפוש מדדים"
-             onkeydown="if(event.key==='Enter'){window.location.href='search-results.html'}">
-    </div>
-
     <ul class="nav-links" role="list">
-      <li><a href="home.html">בית</a></li>
-      <li><a href="search-results.html">חיפוש</a></li>
       <li><a href="browse.html">עיון</a></li>
       <li><a href="node-chart.html">מפה סמנטית</a></li>
       <li><a href="#">אודות</a></li>
     </ul>
+    <a href="home.html" class="nav-logo">קטלוג מדדים <span>| JDC DIDA</span></a>
   </nav>
 </header>
 
