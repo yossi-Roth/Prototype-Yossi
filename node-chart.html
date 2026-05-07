@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מפה סמנטית — קטלוג מדדים חברתיים | JDC DIDA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ul, ol { list-style: none; }
+    button { cursor: pointer; font-family: inherit; border: none; background: none; }
+    a { text-decoration: none; color: inherit; }
+
+    :root {
+      --primary:        #0369A1;
+      --primary-hover:  #0284C7;
+      --primary-light:  #E0F2FE;
+      --primary-mid:    #0EA5E9;
+
+      --bg-page:        #F8FAFC;
+      --bg-card:        #FFFFFF;
+      --bg-canvas:      #FAFBFC;
+
+      --border:         #E2E8F0;
+      --border-strong:  #CBD5E1;
+
+      --text-primary:   #0F172A;
+      --text-secondary: #475569;
+      --text-muted:     #94A3B8;
+      --text-inverse:   #FFFFFF;
+
+      /* Node type colors */
+      --node-domain:        #0369A1;
+      --node-domain-light:  #DBEAFE;
+      --node-topic:         #1D4ED8;
+      --node-topic-light:   #DBEAFE;
+      --node-outcome:       #059669;
+      --node-outcome-light: #D1FAE5;
+      --node-indicator:     #FFFFFF;
+      --node-indicator-stroke: #0369A1;
+      --node-method:        #F1F5F9;
+      --node-method-stroke: #94A3B8;
+
+      /* Link types */
+      --link-hierarchical: #94A3B8;
+      --link-complementary: #0EA5E9;
+      --link-alternative:  #F59E0B;
+
+      --font: 'Heebo', 'Assistant', sans-serif;
+
+      --radius-sm:   4px;
+      --radius-md:   8px;
+      --radius-lg:   12px;
+      --radius-xl:   16px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,.10);
+      --shadow-xl: 0 20px 50px rgba(0,0,0,.12);
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    .global-nav {
+      background: var(--bg-card);
+      border-block-end: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      z-index: 100;
+      position: relative;
+    }
+    .global-nav-inner {
+      padding-inline: 32px;
+      padding-block: 14px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+    .nav-logo span { font-weight: 300; color: var(--text-muted); }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      margin-inline-start: auto;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      transition: all .15s;
+    }
+    .nav-links a:hover { background: var(--bg-page); color: var(--text-primary); }
+    .nav-links a.active { color: var(--primary); background: var(--primary-light); }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header {
+      padding-inline: 32px;
+      padding-block: 14px 12px;
+      background: var(--bg-card);
+      border-block-end: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      z-index: 50;
+    }
+    .page-title-block { display: flex; align-items: center; gap: 12px; }
+    .page-icon {
+      width: 36px; height: 36px;
+      display: grid; place-items: center;
+      border-radius: var(--radius-md);
+      background: var(--primary-light);
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+    .page-icon svg { width: 20px; height: 20px; }
+    .page-title { font-size: 18px; font-weight: 700; color: var(--text-primary); line-height: 1.2; }
+    .page-sub { font-size: 13px; color: var(--text-muted); }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-inline-start: auto;
+    }
+    .breadcrumb-item {
+      padding: 4px 10px;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all .15s;
+    }
+    .breadcrumb-item:hover { border-color: var(--primary); color: var(--primary); }
+    .breadcrumb-item.current {
+      background: var(--primary-light);
+      border-color: #BAE6FD;
+      color: var(--primary);
+      cursor: default;
+    }
+    .breadcrumb-item.current:hover { border-color: #BAE6FD; }
+    .breadcrumb-sep { color: var(--text-muted); font-size: 11px; }
+
+    /* ─── MAIN LAYOUT ─── */
+    .main-layout {
+      position: relative;
+      height: calc(100vh - 56px - 60px);
+      width: 100%;
+      background: var(--bg-canvas);
+      overflow: hidden;
+    }
+
+    /* Subtle dot grid pattern */
+    .canvas-bg {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, #E2E8F0 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: .5;
+      pointer-events: none;
+    }
+
+    /* SVG canvas */
+    #graph {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+    }
+    #graph:active { cursor: grabbing; }
+
+    /* ─── TOOLBAR ─── */
+    .toolbar {
+      position: absolute;
+      inset-block-start: 16px;
+      inset-inline-start: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+    .toolbar-group {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .tool-btn {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      transition: all .15s;
+    }
+    .tool-btn:hover { background: var(--bg-page); color: var(--primary); }
+    .tool-btn svg { width: 18px; height: 18px; }
+    .tool-divider { height: 1px; background: var(--border); margin: 2px 4px; }
+
+    /* ─── LEGEND (bottom inline-start) ─── */
+    .legend {
+      position: absolute;
+      inset-block-end: 16px;
+      inset-inline-start: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: 14px 16px;
+      min-width: 240px;
+      z-index: 10;
+    }
+    .legend-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-block-end: 10px;
+    }
+    .legend-section + .legend-section {
+      margin-block-start: 12px;
+      padding-block-start: 12px;
+      border-block-start: 1px solid var(--border);
+    }
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      padding-block: 3px;
+    }
+    .legend-row + .legend-row { margin-block-start: 0; }
+
+    .legend-line {
+      width: 28px;
+      height: 14px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .legend-line::before {
+      content: '';
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-start: 0;
+      width: 100%;
+      transform: translateY(-50%);
+    }
+    .legend-line.hierarchical::before { border-block-start: 1.5px solid var(--link-hierarchical); }
+    .legend-line.hierarchical::after {
+      content: '';
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-end: 0;
+      width: 0; height: 0;
+      transform: translateY(-50%);
+      border-block-start: 4px solid transparent;
+      border-block-end: 4px solid transparent;
+      border-inline-end: 5px solid var(--link-hierarchical);
+    }
+    .legend-line.complementary::before { border-block-start: 1.5px solid var(--link-complementary); }
+    .legend-line.alternative::before { border-block-start: 1.5px dashed var(--link-alternative); }
+
+    .legend-node {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .legend-node.domain { background: var(--node-domain); }
+    .legend-node.topic { background: var(--node-topic); }
+    .legend-node.outcome { background: var(--node-outcome); width: 14px; height: 14px; }
+    .legend-node.indicator { background: var(--bg-card); border: 2px solid var(--node-indicator-stroke); width: 12px; height: 12px; }
+    .legend-node.method {
+      background: var(--node-method);
+      border: 1.5px dashed var(--node-method-stroke);
+      width: 10px; height: 10px;
+    }
+
+    /* ─── SIDE PANEL ─── */
+    .side-panel {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-end: 0;
+      width: 380px;
+      height: 100%;
+      background: var(--bg-card);
+      border-inline-start: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform .3s ease;
+      z-index: 20;
+    }
+    .side-panel.open { transform: translateX(0); }
+
+    .panel-header {
+      padding: 20px 24px 16px;
+      border-block-end: 1px solid var(--border);
+      position: relative;
+    }
+    .panel-close {
+      position: absolute;
+      inset-block-start: 14px;
+      inset-inline-start: 14px;
+      width: 32px; height: 32px;
+      display: grid; place-items: center;
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+    }
+    .panel-close:hover { background: var(--bg-page); color: var(--text-primary); }
+    .panel-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-block-end: 10px;
+    }
+    .panel-type-badge.domain { background: var(--node-domain-light); color: var(--node-domain); }
+    .panel-type-badge.topic { background: var(--node-topic-light); color: var(--node-topic); }
+    .panel-type-badge.outcome { background: var(--node-outcome-light); color: var(--node-outcome); }
+    .panel-type-badge.indicator { background: var(--primary-light); color: var(--primary); }
+    .panel-type-badge.method { background: #F1F5F9; color: var(--text-secondary); }
+
+    .panel-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin-block-end: 4px;
+    }
+    .panel-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+    }
+    .panel-section + .panel-section {
+      margin-block-start: 24px;
+      padding-block-start: 20px;
+      border-block-start: 1px solid var(--border);
+    }
+    .panel-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-block-end: 10px;
+    }
+    .panel-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .panel-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .panel-stat {
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+    }
+    .panel-stat-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-block-end: 2px;
+    }
+    .panel-stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .relation-list { display: flex; flex-direction: column; gap: 6px; }
+    .relation-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all .15s;
+      width: 100%;
+      text-align: start;
+    }
+    .relation-item:hover {
+      background: var(--primary-light);
+      border-color: #BAE6FD;
+    }
+    .relation-line {
+      width: 24px; height: 12px;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .relation-line::before {
+      content: '';
+      position: absolute;
+      inset-block-start: 50%;
+      width: 100%;
+      transform: translateY(-50%);
+    }
+    .relation-line.hierarchical::before { border-block-start: 1.5px solid var(--link-hierarchical); }
+    .relation-line.complementary::before { border-block-start: 1.5px solid var(--link-complementary); }
+    .relation-line.alternative::before { border-block-start: 1.5px dashed var(--link-alternative); }
+    .relation-name { flex: 1; font-weight: 500; }
+    .relation-arrow { color: var(--text-muted); font-size: 14px; }
+
+    .panel-footer {
+      padding: 16px 24px;
+      border-block-start: 1px solid var(--border);
+      background: var(--bg-page);
+    }
+    .btn-primary {
+      width: 100%;
+      padding: 10px 16px;
+      background: var(--primary);
+      color: var(--text-inverse);
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: var(--radius-md);
+      transition: background .15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary {
+      width: 100%;
+      padding: 10px 16px;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      transition: all .15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-block-start: 8px;
+    }
+    .btn-secondary:hover { background: var(--bg-page); border-color: var(--primary); }
+
+    /* ─── EMPTY STATE ─── */
+    .empty-state {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-start: 50%;
+      transform: translate(50%, -50%);
+      text-align: center;
+      max-width: 480px;
+      pointer-events: none;
+      z-index: 5;
+      transition: opacity .3s;
+    }
+    .empty-state.hidden { opacity: 0; pointer-events: none; }
+    .empty-state-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-block-end: 6px;
+    }
+    .empty-state-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-block-end: 4px;
+    }
+    .empty-state-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .empty-state-arrow {
+      margin-block-start: 16px;
+      color: var(--primary);
+      animation: pulse-down 2s ease-in-out infinite;
+      display: inline-block;
+    }
+    @keyframes pulse-down {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    /* ─── TOOLTIP ─── */
+    .node-tooltip {
+      position: absolute;
+      background: rgba(15, 23, 42, .95);
+      color: var(--text-inverse);
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 500;
+      pointer-events: none;
+      z-index: 30;
+      opacity: 0;
+      transition: opacity .15s;
+      box-shadow: var(--shadow-lg);
+      white-space: nowrap;
+      max-width: 280px;
+    }
+    .node-tooltip.visible { opacity: 1; }
+    .node-tooltip-title { font-weight: 600; }
+    .node-tooltip-meta { font-size: 11px; color: #CBD5E1; margin-block-start: 2px; }
+
+    .edge-tooltip {
+      position: absolute;
+      background: rgba(15, 23, 42, .95);
+      color: var(--text-inverse);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 500;
+      pointer-events: none;
+      z-index: 30;
+      opacity: 0;
+      transition: opacity .15s;
+      box-shadow: var(--shadow-lg);
+      white-space: nowrap;
+    }
+    .edge-tooltip.visible { opacity: 1; }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: absolute;
+      inset-block-end: 24px;
+      inset-inline-start: 50%;
+      transform: translateX(50%) translateY(20px);
+      background: rgba(15, 23, 42, .95);
+      color: var(--text-inverse);
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 40;
+      opacity: 0;
+      transition: opacity .25s, transform .25s;
+    }
+    .toast.visible {
+      opacity: 1;
+      transform: translateX(50%) translateY(0);
+    }
+
+    /* ─── HELP HINT (bottom inline-end) ─── */
+    .help-hint {
+      position: absolute;
+      inset-block-end: 16px;
+      inset-inline-end: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      box-shadow: var(--shadow-md);
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      z-index: 10;
+    }
+    .help-hint-key {
+      font-family: monospace;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .help-hint-item { display: flex; align-items: center; gap: 6px; }
+
+    /* SVG node styling */
+    .node-circle {
+      cursor: pointer;
+      transition: filter .2s, opacity .25s;
+    }
+    .node-circle:hover { filter: brightness(1.05); }
+    .node.disabled .node-circle {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+    .node-label {
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      pointer-events: none;
+      text-anchor: middle;
+      transition: opacity .25s;
+      paint-order: stroke fill;
+      stroke: white;
+      stroke-width: 3px;
+      stroke-linejoin: round;
+    }
+    .node.is-domain .node-label,
+    .node.is-topic .node-label { font-size: 13px; font-weight: 700; }
+    .node.is-method .node-label { font-size: 11px; }
+
+    .node-link {
+      fill: none;
+      transition: opacity .25s;
+    }
+    .node-link.hierarchical { stroke: var(--link-hierarchical); stroke-width: 1.4; }
+    .node-link.complementary { stroke: var(--link-complementary); stroke-width: 1.6; }
+    .node-link.alternative { stroke: var(--link-alternative); stroke-width: 1.6; stroke-dasharray: 5 4; }
+
+    .node.is-faded { opacity: .15; }
+    .node-link.is-faded { opacity: .08; }
+    .node.is-highlighted .node-circle { filter: drop-shadow(0 0 8px rgba(3,105,161,.4)); }
+    .node.is-selected .node-circle {
+      stroke: var(--primary) !important;
+      stroke-width: 3.5px !important;
+      filter: drop-shadow(0 0 0 3px rgba(3,105,161,.15));
+    }
+    .node.is-expanded .node-circle::after {
+      content: '';
+    }
+
+    /* The "expandable" indicator: small dot on bottom of node */
+    .expand-indicator {
+      fill: var(--primary);
+      stroke: white;
+      stroke-width: 2;
+    }
+    .expand-indicator-icon {
+      fill: white;
+      font-size: 10px;
+      font-weight: 800;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- ─── GLOBAL NAV ─── -->
+  <nav class="global-nav">
+    <div class="global-nav-inner">
+      <a href="home.html" class="nav-logo">קטלוג מדדים <span>· JDC DIDA</span></a>
+      <div class="nav-links">
+        <a href="home.html">בית</a>
+        <a href="search-results.html">חיפוש</a>
+        <a href="browse.html">עיון</a>
+        <a href="node-chart.html" class="active" aria-current="page">מפה סמנטית</a>
+        <a href="#">אודות</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── PAGE HEADER ─── -->
+  <header class="page-header">
+    <div class="page-title-block">
+      <div class="page-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="6" cy="6" r="2.5"/>
+          <circle cx="18" cy="6" r="2.5"/>
+          <circle cx="12" cy="18" r="2.5"/>
+          <circle cx="12" cy="12" r="2"/>
+          <line x1="6" y1="6" x2="12" y2="12"/>
+          <line x1="18" y1="6" x2="12" y2="12"/>
+          <line x1="12" y1="12" x2="12" y2="18"/>
+        </svg>
+      </div>
+      <div>
+        <div class="page-title">מפה סמנטית</div>
+        <div class="page-sub">חקור את הקשרים בין תחומים, תוצאות ומדדים</div>
+      </div>
+    </div>
+
+    <nav class="breadcrumb" id="breadcrumb">
+      <span class="breadcrumb-item current" data-id="root">כל התחומים</span>
+    </nav>
+  </header>
+
+  <!-- ─── MAIN ─── -->
+  <main class="main-layout">
+    <div class="canvas-bg"></div>
+    <svg id="graph"></svg>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-state-title">בחר תחום חיים להתחיל</div>
+      <div class="empty-state-sub">המפה תפרוש בפניך את הנושאים, התוצאות והמדדים בכל תחום</div>
+      <div class="empty-state-hint">שמונה תחומי חיים זמינים · אקטיבי ב-MVP: בריאות</div>
+      <div class="empty-state-arrow">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="4" x2="12" y2="20"/>
+          <polyline points="6 14, 12 20, 18 14"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button class="tool-btn" id="zoomIn" title="הגדל">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+        <button class="tool-btn" id="zoomOut" title="הקטן">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+        <div class="tool-divider"></div>
+        <button class="tool-btn" id="zoomReset" title="התאם למסך">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="4 9 4 4 9 4"/>
+            <polyline points="20 9 20 4 15 4"/>
+            <polyline points="4 15 4 20 9 20"/>
+            <polyline points="20 15 20 20 15 20"/>
+          </svg>
+        </button>
+        <button class="tool-btn" id="resetGraph" title="התחל מחדש">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="1 4 1 10 7 10"/>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-section">
+        <div class="legend-title">סוגי צמתים</div>
+        <div class="legend-row"><span class="legend-node domain"></span>תחום חיים</div>
+        <div class="legend-row"><span class="legend-node topic"></span>נושא / תת-תחום</div>
+        <div class="legend-row"><span class="legend-node outcome"></span>תוצאה (Outcome)</div>
+        <div class="legend-row"><span class="legend-node indicator"></span>מדד</div>
+        <div class="legend-row"><span class="legend-node method"></span>מתודולוגיה</div>
+      </div>
+      <div class="legend-section">
+        <div class="legend-title">סוגי קשרים</div>
+        <div class="legend-row"><span class="legend-line hierarchical"></span>היררכי (Parent → Child)</div>
+        <div class="legend-row"><span class="legend-line complementary"></span>משלים</div>
+        <div class="legend-row"><span class="legend-line alternative"></span>חלופי</div>
+      </div>
+    </div>
+
+    <!-- Help hint -->
+    <div class="help-hint">
+      <div class="help-hint-item"><span class="help-hint-key">לחיצה</span>פתיחת קשרים</div>
+      <div class="help-hint-item"><span class="help-hint-key">דאבל-קליק</span>פתיחת כרטיס</div>
+      <div class="help-hint-item"><span class="help-hint-key">גלילה</span>זום</div>
+    </div>
+
+    <!-- Side panel -->
+    <aside class="side-panel" id="sidePanel">
+      <div class="panel-header">
+        <button class="panel-close" id="panelClose">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="6" y1="6" x2="18" y2="18"/>
+            <line x1="6" y1="18" x2="18" y2="6"/>
+          </svg>
+        </button>
+        <div id="panelTypeBadge" class="panel-type-badge domain">תחום חיים</div>
+        <h2 class="panel-title" id="panelTitle">—</h2>
+        <div class="panel-meta" id="panelMeta">—</div>
+      </div>
+      <div class="panel-body" id="panelBody"></div>
+      <div class="panel-footer" id="panelFooter"></div>
+    </aside>
+
+    <!-- Tooltip -->
+    <div class="node-tooltip" id="nodeTooltip"></div>
+    <div class="edge-tooltip" id="edgeTooltip"></div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+  </main>
+
+  <script>
+  /* ─────────────────────────────────────────────────
+     DATA — Catalog network
+     ───────────────────────────────────────────────── */
+  const DATA = {
+    nodes: [
+      // ─── Life domains (L1) ───
+      { id: 'health',   label: 'בריאות',           type: 'domain', active: true,
+        desc: 'תחום החיים המרכזי במלאי MVP. כולל קידום בריאות, בריאות הנפש, מערכת הבריאות ועוד.', counts:{topics:4, outcomes:14, indicators:48} },
+      { id: 'edu',      label: 'חינוך',            type: 'domain', active: false },
+      { id: 'welfare',  label: 'רווחה',            type: 'domain', active: false },
+      { id: 'employ',   label: 'תעסוקה ופרנסה',    type: 'domain', active: false },
+      { id: 'housing',  label: 'דיור',             type: 'domain', active: false },
+      { id: 'resilience', label: 'חוסן וקהילה',    type: 'domain', active: false },
+      { id: 'digital',  label: 'דיגיטל',           type: 'domain', active: false },
+      { id: 'sustain',  label: 'סביבה וקיימות',     type: 'domain', active: false },
+
+      // ─── Topics under בריאות (L2) ───
+      { id: 't.health-promotion', label: 'קידום בריאות',  type: 'topic', parent: 'health', active: true,
+        desc: 'מניעה ראשונית, חינוך לבריאות, ושינוי התנהגותי. בולט במיוחד באוכלוסיות במצבי סיכון.', counts:{outcomes:4, indicators:14} },
+      { id: 't.mental-health',    label: 'בריאות הנפש',  type: 'topic', parent: 'health', active: false },
+      { id: 't.health-system',    label: 'מערכת הבריאות', type: 'topic', parent: 'health', active: false },
+      { id: 't.community-health', label: 'בריאות בקהילה', type: 'topic', parent: 'health', active: false },
+
+      // ─── Outcomes under קידום בריאות (L3) ───
+      { id: 'o.nutrition',     label: 'תזונה',             type: 'outcome', parent: 't.health-promotion',
+        desc: 'שיפור המצב התזונתי ומניעת השמנה בקרב ילדים, נוער ומשפחותיהם.', counts:{indicators:4} },
+      { id: 'o.dental',        label: 'בריאות השן',        type: 'outcome', parent: 't.health-promotion',
+        desc: 'הפחתה בתחלואת השן בקרב ילדים ומשפחות.', counts:{indicators:3} },
+      { id: 'o.physical',      label: 'פעילות גופנית',     type: 'outcome', parent: 't.health-promotion',
+        desc: 'הגברת הפעילות הגופנית בקרב ילדים ובני נוער.', counts:{indicators:3} },
+      { id: 'o.environment',   label: 'סביבה תומכת בריאות', type: 'outcome', parent: 't.health-promotion',
+        desc: 'פיתוח סביבה תומכת בריאות על שלל היבטיה — תשתיות, נורמות, נגישות.', counts:{indicators:3} },
+
+      // ─── Indicators ───
+      // Nutrition
+      { id: 'i.bmi',         label: 'אחוז ילדים עם BMI > 30', type: 'indicator', parent: 'o.nutrition',
+        desc: 'אחוז הילדים בגיל בית-ספר שמדד מסת הגוף שלהם מעל הסף לאבחון השמנה.', counts:{methods:1, programs:7} },
+      { id: 'i.veggies',     label: 'צריכת ירקות יומית',     type: 'indicator', parent: 'o.nutrition',
+        desc: 'מספר מנות הירקות הממוצע ביום, בהתאם להמלצות משרד הבריאות.', counts:{methods:1, programs:5} },
+      { id: 'i.sugar',       label: 'צריכת משקאות ממותקים',   type: 'indicator', parent: 'o.nutrition',
+        desc: 'תדירות צריכה של משקאות ממותקים, מדד מנבא להשמנה ולסוכרת.', counts:{methods:1, programs:4} },
+      { id: 'i.knowledge',   label: 'ידע תזונתי',            type: 'indicator', parent: 'o.nutrition',
+        desc: 'מדד תפוקה — שיפור הידע התזונתי בקרב משתתפי תוכניות חינוך.', counts:{methods:1, programs:3} },
+      // Dental
+      { id: 'i.dmft',        label: 'אבחון עששת (DMFT)',     type: 'indicator', parent: 'o.dental',
+        desc: 'מדד תוצאה אובייקטיבי — סך השיניים הנגועות, החסרות והמטופלות.', counts:{methods:1, programs:6} },
+      { id: 'i.brushing',    label: 'שכיחות צחצוח שיניים',   type: 'indicator', parent: 'o.dental',
+        desc: 'מדד תפוקה / תוצאה התנהגותי. דיווח עצמי על תדירות צחצוח שיניים.', counts:{methods:1, programs:4} },
+      { id: 'i.dental-visit', label: 'ביקורים שנתיים אצל רופא שיניים', type: 'indicator', parent: 'o.dental',
+        desc: 'מדד מנבא — מספר ביקורי בדיקה שגרתיים אצל רופא שיניים בשנה.', counts:{methods:1, programs:3} },
+      // Physical
+      { id: 'i.activity-hours', label: 'שעות פעילות גופנית בשבוע', type: 'indicator', parent: 'o.physical',
+        desc: 'סך שעות פעילות גופנית מתונה-ערה במהלך שבוע ממוצע.', counts:{methods:2, programs:8} },
+      { id: 'i.who-rec',     label: 'אחוז ילדים העומדים בהמלצות WHO', type: 'indicator', parent: 'o.physical',
+        desc: 'אחוז הילדים שמבצעים 60+ דקות של פעילות גופנית מתונה-ערה ביום, בהתאם להמלצות ארגון הבריאות העולמי.', counts:{methods:1, programs:6} },
+      { id: 'i.steps',       label: 'צעדים יומיים',          type: 'indicator', parent: 'o.physical',
+        desc: 'מדד אובייקטיבי — מספר הצעדים היומי הממוצע, נמדד באמצעות accelerometer או pedometer.', counts:{methods:1, programs:5} },
+      // Environment
+      { id: 'i.facilities',  label: 'מתקני ספורט פעילים',    type: 'indicator', parent: 'o.environment',
+        desc: 'כמות מתקני ספורט ציבוריים זמינים ופעילים ברשות, יחס לאוכלוסייה.', counts:{methods:1, programs:5} },
+      { id: 'i.greenspace',  label: 'שטחים ירוקים נגישים',   type: 'indicator', parent: 'o.environment',
+        desc: 'אחוז התושבים החיים במרחק הליכה (10 דקות) משטח ירוק ציבורי.', counts:{methods:1, programs:4} },
+      { id: 'i.school-food', label: 'אכילה בריאה במוסדות חינוך', type: 'indicator', parent: 'o.environment',
+        desc: 'אחוז המוסדות החינוכיים המספקים מזון העומד בקריטריונים תזונתיים.', counts:{methods:1, programs:4} },
+
+      // ─── Methodologies ───
+      { id: 'm.eat26',       label: 'שאלון EAT-26',          type: 'method',
+        desc: 'שאלון מתוקף בינלאומית לזיהוי דפוסי אכילה לקויים. 26 פריטים, ניתן בעברית.' },
+      { id: 'm.bmi',         label: 'מדידה אנתרופומטרית',     type: 'method',
+        desc: 'מדידה ישירה של גובה ומשקל. סטנדרט זהב למדדי השמנה.' },
+      { id: 'm.dmft',        label: 'בדיקת DMFT',            type: 'method',
+        desc: 'בדיקה קלינית על-ידי רופא שיניים. סטנדרט WHO לאבחון עששת.' },
+      { id: 'm.who-steps',   label: 'WHO STEPS Survey',      type: 'method',
+        desc: 'פרוטוקול ניטור של גורמי סיכון למחלות לא-מדבקות. כולל פעילות גופנית, תזונה, אלכוהול.' },
+      { id: 'm.self-report', label: 'דיווח עצמי',            type: 'method',
+        desc: 'שאלון או יומן אישי. עלות נמוכה, אך פחות מדויק מתצפית או מדידה ישירה.' },
+      { id: 'm.observation', label: 'תצפית מובנית',          type: 'method',
+        desc: 'תצפית של חוקר/מורה לפי פרוטוקול קבוע. מתאים בעיקר במסגרות חינוך.' }
+    ],
+    links: [
+      // Hierarchical (parent → child) for active branch
+      { source: 'health',          target: 't.health-promotion', type: 'hierarchical' },
+      { source: 'health',          target: 't.mental-health',    type: 'hierarchical' },
+      { source: 'health',          target: 't.health-system',    type: 'hierarchical' },
+      { source: 'health',          target: 't.community-health', type: 'hierarchical' },
+
+      { source: 't.health-promotion', target: 'o.nutrition',     type: 'hierarchical' },
+      { source: 't.health-promotion', target: 'o.dental',        type: 'hierarchical' },
+      { source: 't.health-promotion', target: 'o.physical',      type: 'hierarchical' },
+      { source: 't.health-promotion', target: 'o.environment',   type: 'hierarchical' },
+
+      { source: 'o.nutrition',  target: 'i.bmi',       type: 'hierarchical' },
+      { source: 'o.nutrition',  target: 'i.veggies',   type: 'hierarchical' },
+      { source: 'o.nutrition',  target: 'i.sugar',     type: 'hierarchical' },
+      { source: 'o.nutrition',  target: 'i.knowledge', type: 'hierarchical' },
+
+      { source: 'o.dental',     target: 'i.dmft',         type: 'hierarchical' },
+      { source: 'o.dental',     target: 'i.brushing',     type: 'hierarchical' },
+      { source: 'o.dental',     target: 'i.dental-visit', type: 'hierarchical' },
+
+      { source: 'o.physical',   target: 'i.activity-hours', type: 'hierarchical' },
+      { source: 'o.physical',   target: 'i.who-rec',        type: 'hierarchical' },
+      { source: 'o.physical',   target: 'i.steps',          type: 'hierarchical' },
+
+      { source: 'o.environment', target: 'i.facilities',  type: 'hierarchical' },
+      { source: 'o.environment', target: 'i.greenspace',  type: 'hierarchical' },
+      { source: 'o.environment', target: 'i.school-food', type: 'hierarchical' },
+
+      // Indicator → method (hierarchical)
+      { source: 'i.bmi',          target: 'm.bmi',         type: 'hierarchical' },
+      { source: 'i.veggies',      target: 'm.eat26',       type: 'hierarchical' },
+      { source: 'i.sugar',        target: 'm.self-report', type: 'hierarchical' },
+      { source: 'i.knowledge',    target: 'm.self-report', type: 'hierarchical' },
+      { source: 'i.dmft',         target: 'm.dmft',        type: 'hierarchical' },
+      { source: 'i.brushing',     target: 'm.self-report', type: 'hierarchical' },
+      { source: 'i.dental-visit', target: 'm.self-report', type: 'hierarchical' },
+      { source: 'i.activity-hours', target: 'm.who-steps', type: 'hierarchical' },
+      { source: 'i.activity-hours', target: 'm.self-report', type: 'hierarchical' },
+      { source: 'i.who-rec',      target: 'm.who-steps',   type: 'hierarchical' },
+      { source: 'i.steps',        target: 'm.who-steps',   type: 'hierarchical' },
+      { source: 'i.facilities',   target: 'm.observation', type: 'hierarchical' },
+      { source: 'i.greenspace',   target: 'm.observation', type: 'hierarchical' },
+      { source: 'i.school-food',  target: 'm.observation', type: 'hierarchical' },
+
+      // Complementary cross-relationships (משלים) — same outcome or cross-outcome
+      { source: 'i.veggies',        target: 'i.knowledge',     type: 'complementary' },
+      { source: 'i.activity-hours', target: 'i.steps',         type: 'complementary' },
+      { source: 'i.facilities',     target: 'i.activity-hours', type: 'complementary' },
+      { source: 'i.greenspace',     target: 'i.steps',          type: 'complementary' },
+      { source: 'i.school-food',    target: 'i.veggies',        type: 'complementary' },
+
+      // Alternative — different ways to measure similar concept
+      { source: 'i.bmi',         target: 'i.sugar',          type: 'alternative' },
+      { source: 'i.who-rec',     target: 'i.activity-hours', type: 'alternative' },
+      { source: 'i.brushing',    target: 'i.dental-visit',   type: 'alternative' }
+    ]
+  };
+
+  /* ─────────────────────────────────────────────────
+     STATE
+     ───────────────────────────────────────────────── */
+  const STATE = {
+    expandedNodes: new Set(),     // node ids that have been clicked open
+    visibleNodeIds: new Set(),    // node ids currently rendered
+    selectedNodeId: null,
+    centerNodeId: null            // currently centered (pinned) node
+  };
+
+  /* ─────────────────────────────────────────────────
+     SETUP
+     ───────────────────────────────────────────────── */
+  const NODE_RADIUS = {
+    domain: 38,
+    topic: 30,
+    outcome: 24,
+    indicator: 18,
+    method: 14
+  };
+
+  const svg = d3.select('#graph');
+  const width = () => document.querySelector('.main-layout').clientWidth;
+  const height = () => document.querySelector('.main-layout').clientHeight;
+
+  let viewport = svg.append('g').attr('class','viewport');
+  let linkLayer = viewport.append('g').attr('class','link-layer');
+  let nodeLayer = viewport.append('g').attr('class','node-layer');
+
+  // Define arrow markers for hierarchical edges
+  svg.append('defs').html(`
+    <marker id="arrow-hier" viewBox="0 -5 10 10" refX="0" refY="0" markerWidth="6" markerHeight="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,-5 L10,0 L0,5" fill="${getCss('--link-hierarchical')}"/>
+    </marker>
+  `);
+
+  // Zoom & pan
+  const zoom = d3.zoom()
+    .scaleExtent([0.3, 3])
+    .on('zoom', (e) => viewport.attr('transform', e.transform));
+  svg.call(zoom);
+
+  /* ─────────────────────────────────────────────────
+     SIMULATION
+     ───────────────────────────────────────────────── */
+  const simulation = d3.forceSimulation()
+    .force('link', d3.forceLink().id(d => d.id).distance(d => {
+      if (d.type === 'complementary' || d.type === 'alternative') return 110;
+      const types = [d.source.type, d.target.type];
+      if (types.includes('domain')) return 130;
+      if (types.includes('topic')) return 110;
+      if (types.includes('outcome')) return 90;
+      return 75;
+    }).strength(d => d.type === 'hierarchical' ? 0.7 : 0.25))
+    .force('charge', d3.forceManyBody().strength(d => {
+      const r = NODE_RADIUS[d.type] || 20;
+      return -r * 12;
+    }))
+    .force('center', d3.forceCenter(width()/2, height()/2))
+    .force('x', d3.forceX(width()/2).strength(0.06))
+    .force('y', d3.forceY(height()/2).strength(0.08))
+    .force('collide', d3.forceCollide().radius(d => {
+      const r = NODE_RADIUS[d.type] || 20;
+      // Approximate label half-width so collisions respect the text, not just the circle
+      const labelHalfWidth = (d.label || '').length * 3.8;
+      return Math.max(r, labelHalfWidth) + 8;
+    }))
+    .alphaDecay(0.03);
+
+  /* ─────────────────────────────────────────────────
+     RENDER
+     ───────────────────────────────────────────────── */
+  function render() {
+    const visibleNodes = DATA.nodes.filter(n => STATE.visibleNodeIds.has(n.id));
+    const visibleNodeIds = new Set(visibleNodes.map(n => n.id));
+    const visibleLinks = DATA.links.filter(l => {
+      const src = typeof l.source === 'string' ? l.source : l.source.id;
+      const tgt = typeof l.target === 'string' ? l.target : l.target.id;
+      return visibleNodeIds.has(src) && visibleNodeIds.has(tgt);
+    });
+
+    // ─── Links ───
+    const link = linkLayer.selectAll('.node-link').data(visibleLinks, d => {
+      const s = typeof d.source === 'string' ? d.source : d.source.id;
+      const t = typeof d.target === 'string' ? d.target : d.target.id;
+      return `${s}|${t}|${d.type}`;
+    });
+    link.exit().remove();
+    const linkEnter = link.enter().append('line')
+      .attr('class', d => `node-link ${d.type}`)
+      .attr('marker-end', d => d.type === 'hierarchical' ? 'url(#arrow-hier)' : null)
+      .on('mouseenter', (e, d) => showEdgeTooltip(e, d))
+      .on('mouseleave', hideEdgeTooltip);
+
+    // ─── Nodes ───
+    const node = nodeLayer.selectAll('.node').data(visibleNodes, d => d.id);
+    node.exit().remove();
+
+    const nodeEnter = node.enter().append('g')
+      .attr('class', d => `node is-${d.type} ${d.active === false ? 'disabled' : ''}`)
+      .on('mouseenter', onNodeMouseEnter)
+      .on('mouseleave', onNodeMouseLeave)
+      .on('click', onNodeClick)
+      .on('dblclick', onNodeDblClick)
+      .call(d3.drag()
+        .on('start', dragStart)
+        .on('drag', dragMove)
+        .on('end', dragEnd));
+
+    // Circle
+    nodeEnter.append('circle')
+      .attr('class','node-circle')
+      .attr('r', d => NODE_RADIUS[d.type])
+      .attr('fill', d => nodeFill(d))
+      .attr('stroke', d => nodeStroke(d))
+      .attr('stroke-width', d => nodeStrokeWidth(d))
+      .attr('stroke-dasharray', d => d.type === 'method' ? '4 3' : null);
+
+    // Label
+    nodeEnter.append('text')
+      .attr('class','node-label')
+      .attr('dy', d => NODE_RADIUS[d.type] + 16)
+      .attr('fill', 'var(--text-primary)')
+      .text(d => d.label);
+
+    // Expand indicator (small "+" on bottom-end of expandable nodes)
+    nodeEnter.filter(isExpandable).append('circle')
+      .attr('class','expand-indicator')
+      .attr('r', 7)
+      .attr('cx', d => Math.cos(-Math.PI/4) * NODE_RADIUS[d.type])
+      .attr('cy', d => Math.sin(-Math.PI/4) * NODE_RADIUS[d.type]);
+    nodeEnter.filter(isExpandable).append('text')
+      .attr('class','expand-indicator-icon')
+      .attr('x', d => Math.cos(-Math.PI/4) * NODE_RADIUS[d.type])
+      .attr('y', d => Math.sin(-Math.PI/4) * NODE_RADIUS[d.type] + 1)
+      .text('+');
+
+    // Update existing
+    const allNodes = nodeEnter.merge(node);
+    allNodes.classed('is-expanded', d => STATE.expandedNodes.has(d.id));
+    allNodes.classed('is-selected', d => STATE.selectedNodeId === d.id);
+    // Update expand indicators on existing nodes
+    allNodes.selectAll('.expand-indicator, .expand-indicator-icon')
+      .style('display', d => isExpandable(d) ? null : 'none');
+
+    // ─── Simulation ───
+    simulation.nodes(visibleNodes).on('tick', () => {
+      linkLayer.selectAll('.node-link')
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => endX(d))
+        .attr('y2', d => endY(d));
+      nodeLayer.selectAll('.node')
+        .attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+    simulation.force('link').links(visibleLinks);
+    simulation.alpha(0.6).restart();
+
+    // Update breadcrumb
+    updateBreadcrumb();
+
+    // Toggle empty state
+    document.getElementById('emptyState').classList.toggle('hidden',
+      STATE.expandedNodes.size > 0 || STATE.selectedNodeId !== null);
+  }
+
+  // Stop the line slightly before the target circle so arrows don't overlap
+  function endX(d) {
+    const dx = d.target.x - d.source.x;
+    const dy = d.target.y - d.source.y;
+    const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+    const r = (NODE_RADIUS[d.target.type] || 20) + (d.type === 'hierarchical' ? 4 : 0);
+    return d.target.x - (dx/dist) * r;
+  }
+  function endY(d) {
+    const dx = d.target.x - d.source.x;
+    const dy = d.target.y - d.source.y;
+    const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+    const r = (NODE_RADIUS[d.target.type] || 20) + (d.type === 'hierarchical' ? 4 : 0);
+    return d.target.y - (dy/dist) * r;
+  }
+
+  function nodeFill(d) {
+    if (d.type === 'domain')   return getCss('--node-domain');
+    if (d.type === 'topic')    return getCss('--node-topic');
+    if (d.type === 'outcome')  return getCss('--node-outcome');
+    if (d.type === 'indicator')return getCss('--node-indicator');
+    if (d.type === 'method')   return getCss('--node-method');
+    return '#999';
+  }
+  function nodeStroke(d) {
+    if (d.type === 'indicator') return getCss('--node-indicator-stroke');
+    if (d.type === 'method')    return getCss('--node-method-stroke');
+    if (d.type === 'domain' || d.type === 'topic' || d.type === 'outcome') return 'rgba(255,255,255,.5)';
+    return 'transparent';
+  }
+  function nodeStrokeWidth(d) {
+    if (d.type === 'indicator') return 2;
+    if (d.type === 'method') return 1.5;
+    return 2;
+  }
+  function isExpandable(d) {
+    if (d.active === false) return false;
+    if (STATE.expandedNodes.has(d.id)) return false;
+    // expandable if it has any unexpanded children in DATA
+    const children = DATA.links.filter(l => {
+      const s = typeof l.source === 'string' ? l.source : l.source.id;
+      return s === d.id && l.type === 'hierarchical';
+    });
+    if (children.length === 0) return false;
+    // are any children invisible?
+    return children.some(l => {
+      const t = typeof l.target === 'string' ? l.target : l.target.id;
+      return !STATE.visibleNodeIds.has(t);
+    });
+  }
+
+  function getCss(varName) {
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  }
+
+  /* ─────────────────────────────────────────────────
+     INTERACTIONS
+     ───────────────────────────────────────────────── */
+  function onNodeClick(e, d) {
+    e.stopPropagation();
+    if (d.active === false) {
+      showToast('תחום זה יתווסף בגרסאות עתידיות');
+      return;
+    }
+    // Open panel first so centerNode can account for its width
+    selectNode(d);
+    centerNode(d);
+    expandNode(d);
+  }
+
+  // Width of the side panel — must match CSS .side-panel width
+  const PANEL_WIDTH = 380;
+
+  function visibleCenterX() {
+    const panelOpen = document.getElementById('sidePanel').classList.contains('open');
+    if (!panelOpen) return width() / 2;
+    // Panel is anchored to inline-end (left in RTL): visible canvas runs from x=PANEL_WIDTH to x=width()
+    return (PANEL_WIDTH + width()) / 2;
+  }
+
+  function centerNode(d) {
+    // Release any previously pinned center node so it can flow freely
+    if (STATE.centerNodeId && STATE.centerNodeId !== d.id) {
+      const prev = DATA.nodes.find(n => n.id === STATE.centerNodeId);
+      if (prev) { prev.fx = null; prev.fy = null; }
+    }
+    STATE.centerNodeId = d.id;
+
+    // Pin the clicked node to the visible center (excluding the panel area when open)
+    d.fx = visibleCenterX();
+    d.fy = height() / 2;
+
+    // Animate the viewport back to identity so the user always sees the centered node
+    svg.transition().duration(550).call(zoom.transform, d3.zoomIdentity);
+
+    simulation.alpha(0.7).restart();
+  }
+
+  function onNodeDblClick(e, d) {
+    e.stopPropagation();
+    if (d.active === false) return;
+    if (d.type === 'indicator') {
+      showToast('פותח כרטיס מדד...');
+      setTimeout(() => window.location.href = 'indicator-card.html', 700);
+    } else {
+      selectNode(d);
+    }
+  }
+
+  function expandNode(d) {
+    if (d.active === false) return;
+    if (STATE.expandedNodes.has(d.id)) return;
+
+    STATE.expandedNodes.add(d.id);
+    STATE.centerNodeId = d.id;
+
+    // Find hierarchical children
+    const childIds = DATA.links
+      .filter(l => normId(l.source) === d.id && l.type === 'hierarchical')
+      .map(l => normId(l.target));
+
+    const newChildren = childIds
+      .map(id => DATA.nodes.find(n => n.id === id))
+      .filter(c => c && !STATE.visibleNodeIds.has(c.id));
+
+    // Pre-position new children in a radial pattern around the parent
+    // This avoids the "explosion from origin" chaos when many appear at once
+    const parentX = (d.x !== undefined && d.x !== null) ? d.x : visibleCenterX();
+    const parentY = (d.y !== undefined && d.y !== null) ? d.y : height() / 2;
+
+    const childType = newChildren[0]?.type;
+    const radius = childType === 'topic' ? 170 :
+                   childType === 'outcome' ? 140 :
+                   childType === 'indicator' ? 110 :
+                   childType === 'method' ? 80 : 130;
+
+    // Spread children around a 270° arc (top to almost-full-circle), starting from top
+    const arcSpan = newChildren.length > 1 ? Math.PI * 1.6 : 0;
+    const startAngle = -Math.PI / 2 - arcSpan / 2;
+
+    newChildren.forEach((c, i) => {
+      const angle = newChildren.length === 1
+        ? -Math.PI / 2
+        : startAngle + (i / (newChildren.length - 1)) * arcSpan;
+      c.x = parentX + Math.cos(angle) * radius;
+      c.y = parentY + Math.sin(angle) * radius;
+      // Brief soft pin so the simulation respects the chosen position for one tick
+      c.vx = 0; c.vy = 0;
+      STATE.visibleNodeIds.add(c.id);
+    });
+
+    render();
+  }
+
+  function selectNode(d) {
+    STATE.selectedNodeId = d.id;
+    populateSidePanel(d);
+    document.getElementById('sidePanel').classList.add('open');
+    nodeLayer.selectAll('.node').classed('is-selected', n => n.id === d.id);
+  }
+
+  function deselectNode() {
+    STATE.selectedNodeId = null;
+    document.getElementById('sidePanel').classList.remove('open');
+    nodeLayer.selectAll('.node').classed('is-selected', false);
+    // Re-center the pinned node now that the panel is closed
+    if (STATE.centerNodeId) {
+      const c = DATA.nodes.find(n => n.id === STATE.centerNodeId);
+      if (c) {
+        c.fx = visibleCenterX();
+        c.fy = height() / 2;
+        simulation.alpha(0.4).restart();
+      }
+    }
+  }
+
+  function onNodeMouseEnter(e, d) {
+    if (d.active === false) {
+      showNodeTooltip(e, `<div class="node-tooltip-title">${d.label}</div><div class="node-tooltip-meta">תחום נעול ב-MVP</div>`);
+      return;
+    }
+    showNodeTooltip(e, nodeTooltipHtml(d));
+    highlightNeighbors(d);
+  }
+  function onNodeMouseLeave() {
+    hideNodeTooltip();
+    clearHighlight();
+  }
+  function highlightNeighbors(d) {
+    const neighborIds = new Set([d.id]);
+    DATA.links.forEach(l => {
+      const s = typeof l.source === 'string' ? l.source : l.source.id;
+      const t = typeof l.target === 'string' ? l.target : l.target.id;
+      if (s === d.id) neighborIds.add(t);
+      if (t === d.id) neighborIds.add(s);
+    });
+    nodeLayer.selectAll('.node').classed('is-faded', n => !neighborIds.has(n.id));
+    nodeLayer.selectAll('.node').classed('is-highlighted', n => n.id === d.id);
+    linkLayer.selectAll('.node-link').classed('is-faded', l => {
+      const s = typeof l.source === 'string' ? l.source : l.source.id;
+      const t = typeof l.target === 'string' ? l.target : l.target.id;
+      return !(s === d.id || t === d.id);
+    });
+  }
+  function clearHighlight() {
+    nodeLayer.selectAll('.node').classed('is-faded', false).classed('is-highlighted', false);
+    linkLayer.selectAll('.node-link').classed('is-faded', false);
+  }
+
+  function nodeTooltipHtml(d) {
+    const typeLabel = {
+      domain: 'תחום חיים',
+      topic: 'נושא / תת-תחום',
+      outcome: 'תוצאה',
+      indicator: 'מדד',
+      method: 'מתודולוגיה'
+    }[d.type] || '';
+    const conn = DATA.links.filter(l => {
+      const s = typeof l.source === 'string' ? l.source : l.source.id;
+      const t = typeof l.target === 'string' ? l.target : l.target.id;
+      return s === d.id || t === d.id;
+    }).length;
+    let extra = `${typeLabel} · ${conn} קשרים`;
+    if (isExpandable(d)) extra += ' · לחיצה לפתיחה';
+    return `<div class="node-tooltip-title">${d.label}</div><div class="node-tooltip-meta">${extra}</div>`;
+  }
+
+  /* Drag */
+  function dragStart(e, d) {
+    if (!e.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x; d.fy = d.y;
+  }
+  function dragMove(e, d) { d.fx = e.x; d.fy = e.y; }
+  function dragEnd(e, d) {
+    if (!e.active) simulation.alphaTarget(0);
+    d.fx = null; d.fy = null;
+  }
+
+  /* ─────────────────────────────────────────────────
+     SIDE PANEL
+     ───────────────────────────────────────────────── */
+  function populateSidePanel(d) {
+    const typeLabels = {
+      domain: 'תחום חיים', topic: 'נושא / תת-תחום',
+      outcome: 'תוצאה (Outcome)', indicator: 'מדד', method: 'מתודולוגיה'
+    };
+    const badge = document.getElementById('panelTypeBadge');
+    badge.className = `panel-type-badge ${d.type}`;
+    badge.textContent = typeLabels[d.type] || '';
+
+    document.getElementById('panelTitle').textContent = d.label;
+    document.getElementById('panelMeta').textContent = breadcrumbPath(d).join(' › ');
+
+    const body = document.getElementById('panelBody');
+    body.innerHTML = '';
+
+    // Description
+    if (d.desc) {
+      const sec = el('div','panel-section');
+      sec.append(el('div','panel-section-title','תיאור'));
+      sec.append(el('p','panel-desc',d.desc));
+      body.append(sec);
+    }
+
+    // Stats
+    if (d.counts) {
+      const sec = el('div','panel-section');
+      sec.append(el('div','panel-section-title','סטטיסטיקה'));
+      const grid = el('div','panel-stat-grid');
+      Object.entries(d.counts).forEach(([k,v]) => {
+        const labels = { topics:'נושאים', outcomes:'תוצאות', indicators:'מדדים', methods:'מתודולוגיות', programs:'תוכניות' };
+        const stat = el('div','panel-stat');
+        stat.append(el('div','panel-stat-label', labels[k] || k));
+        stat.append(el('div','panel-stat-value', v));
+        grid.append(stat);
+      });
+      sec.append(grid);
+      body.append(sec);
+    }
+
+    // Relations
+    const incomingHier  = DATA.links.filter(l => normId(l.target) === d.id && l.type === 'hierarchical');
+    const outgoingHier  = DATA.links.filter(l => normId(l.source) === d.id && l.type === 'hierarchical');
+    const complementary = DATA.links.filter(l => (normId(l.source) === d.id || normId(l.target) === d.id) && l.type === 'complementary');
+    const alternative   = DATA.links.filter(l => (normId(l.source) === d.id || normId(l.target) === d.id) && l.type === 'alternative');
+
+    if (outgoingHier.length || incomingHier.length || complementary.length || alternative.length) {
+      const sec = el('div','panel-section');
+      sec.append(el('div','panel-section-title','קשרים סמנטיים'));
+      const list = el('div','relation-list');
+      [...incomingHier, ...outgoingHier, ...complementary, ...alternative].forEach(l => {
+        const isOutgoing = normId(l.source) === d.id;
+        const otherId = isOutgoing ? normId(l.target) : normId(l.source);
+        const other = DATA.nodes.find(n => n.id === otherId);
+        if (!other) return;
+        const item = el('button','relation-item');
+        const line = el('span', `relation-line ${l.type}`);
+        const name = el('span','relation-name', other.label);
+        const arrow = el('span','relation-arrow', l.type === 'hierarchical' ? (isOutgoing ? '↓' : '↑') : '↔');
+        item.append(line, name, arrow);
+        item.addEventListener('click', () => {
+          STATE.visibleNodeIds.add(other.id);
+          render();
+          centerNode(other);
+          selectNode(other);
+        });
+        list.append(item);
+      });
+      sec.append(list);
+      body.append(sec);
+    }
+
+    // Footer actions
+    const footer = document.getElementById('panelFooter');
+    footer.innerHTML = '';
+    if (d.type === 'indicator') {
+      const btn = el('button','btn-primary','פתח כרטיס מדד מלא');
+      btn.addEventListener('click', () => window.location.href = 'indicator-card.html');
+      footer.append(btn);
+    }
+    if (isExpandable(d)) {
+      const btn = el('button','btn-primary','הרחב צמתים מקושרים');
+      btn.addEventListener('click', () => expandNode(d));
+      footer.append(btn);
+    }
+    if (d.active === false) {
+      const btn = el('button','btn-secondary','בקש להוסיף לתחום זה');
+      btn.disabled = true;
+      btn.style.opacity = '.5';
+      btn.style.cursor = 'not-allowed';
+      footer.append(btn);
+    }
+  }
+
+  function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+  function normId(ref) { return typeof ref === 'string' ? ref : ref.id; }
+
+  function breadcrumbPath(d) {
+    const path = [d.label];
+    let curr = d;
+    while (curr.parent) {
+      const p = DATA.nodes.find(n => n.id === curr.parent);
+      if (!p) break;
+      path.unshift(p.label);
+      curr = p;
+    }
+    return path;
+  }
+
+  /* ─────────────────────────────────────────────────
+     BREADCRUMB
+     ───────────────────────────────────────────────── */
+  function updateBreadcrumb() {
+    const bc = document.getElementById('breadcrumb');
+    bc.innerHTML = '';
+    const items = [{ id: 'root', label: 'כל התחומים' }];
+    if (STATE.selectedNodeId) {
+      const sel = DATA.nodes.find(n => n.id === STATE.selectedNodeId);
+      const path = [];
+      let c = sel;
+      while (c) {
+        path.unshift({ id: c.id, label: c.label });
+        c = c.parent ? DATA.nodes.find(n => n.id === c.parent) : null;
+      }
+      items.push(...path);
+    } else if (STATE.centerNodeId) {
+      const center = DATA.nodes.find(n => n.id === STATE.centerNodeId);
+      const path = [];
+      let c = center;
+      while (c) {
+        path.unshift({ id: c.id, label: c.label });
+        c = c.parent ? DATA.nodes.find(n => n.id === c.parent) : null;
+      }
+      items.push(...path);
+    }
+    items.forEach((it, i) => {
+      const span = document.createElement('span');
+      span.className = 'breadcrumb-item' + (i === items.length - 1 ? ' current' : '');
+      span.textContent = it.label;
+      span.dataset.id = it.id;
+      span.addEventListener('click', () => {
+        if (it.id === 'root') {
+          resetGraph();
+        } else {
+          const node = DATA.nodes.find(n => n.id === it.id);
+          if (node) selectNode(node);
+        }
+      });
+      bc.append(span);
+      if (i < items.length - 1) {
+        const sep = document.createElement('span');
+        sep.className = 'breadcrumb-sep';
+        sep.textContent = '›';
+        bc.append(sep);
+      }
+    });
+  }
+
+  /* ─────────────────────────────────────────────────
+     TOOLTIPS / TOAST
+     ───────────────────────────────────────────────── */
+  const tooltip = document.getElementById('nodeTooltip');
+  const edgeTooltip = document.getElementById('edgeTooltip');
+  const toast = document.getElementById('toast');
+
+  function showNodeTooltip(e, html) {
+    tooltip.innerHTML = html;
+    tooltip.style.left = (e.clientX + 14) + 'px';
+    tooltip.style.top = (e.clientY + 14) + 'px';
+    tooltip.classList.add('visible');
+  }
+  function hideNodeTooltip() { tooltip.classList.remove('visible'); }
+
+  function showEdgeTooltip(e, l) {
+    const labels = { hierarchical: 'קשר היררכי', complementary: 'קשר משלים', alternative: 'מדדים חלופיים' };
+    edgeTooltip.textContent = labels[l.type] || '';
+    edgeTooltip.style.left = (e.clientX + 14) + 'px';
+    edgeTooltip.style.top = (e.clientY + 14) + 'px';
+    edgeTooltip.classList.add('visible');
+  }
+  function hideEdgeTooltip() { edgeTooltip.classList.remove('visible'); }
+
+  let toastTimer;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('visible');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('visible'), 2200);
+  }
+
+  /* ─────────────────────────────────────────────────
+     CONTROLS
+     ───────────────────────────────────────────────── */
+  document.getElementById('zoomIn').addEventListener('click', () => svg.transition().call(zoom.scaleBy, 1.3));
+  document.getElementById('zoomOut').addEventListener('click', () => svg.transition().call(zoom.scaleBy, 0.77));
+  document.getElementById('zoomReset').addEventListener('click', () => svg.transition().call(zoom.transform, d3.zoomIdentity));
+  document.getElementById('resetGraph').addEventListener('click', resetGraph);
+  document.getElementById('panelClose').addEventListener('click', deselectNode);
+
+  // Click on canvas (not on a node) deselects
+  svg.on('click', () => deselectNode());
+
+  function resetGraph() {
+    // Release any pinned positions
+    DATA.nodes.forEach(n => { n.fx = null; n.fy = null; });
+    STATE.expandedNodes.clear();
+    STATE.visibleNodeIds.clear();
+    STATE.selectedNodeId = null;
+    STATE.centerNodeId = null;
+    document.getElementById('sidePanel').classList.remove('open');
+
+    // Pre-position the 8 life domains in a clean circle around the center
+    const domains = DATA.nodes.filter(n => n.type === 'domain');
+    const cx = width() / 2;
+    const cy = height() / 2;
+    const radius = Math.min(width(), height()) * 0.22;
+    domains.forEach((n, i) => {
+      const angle = (i / domains.length) * Math.PI * 2 - Math.PI / 2;
+      n.x = cx + Math.cos(angle) * radius;
+      n.y = cy + Math.sin(angle) * radius;
+      n.vx = 0; n.vy = 0;
+      STATE.visibleNodeIds.add(n.id);
+    });
+
+    render();
+    svg.transition().call(zoom.transform, d3.zoomIdentity);
+  }
+
+  // Initial: only show domains
+  resetGraph();
+
+  // Resize
+  window.addEventListener('resize', () => {
+    simulation.force('center', d3.forceCenter(width()/2, height()/2));
+    if (STATE.centerNodeId) {
+      const c = DATA.nodes.find(n => n.id === STATE.centerNodeId);
+      if (c) { c.fx = width()/2; c.fy = height()/2; }
+    }
+    simulation.alpha(0.3).restart();
+  });
+  </script>
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>השוואת מדדים — קטלוג המדדים | JDC DIDA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ul, ol { list-style: none; }
+    button { cursor: pointer; font-family: inherit; }
+    a { text-decoration: none; }
+
+    :root {
+      --primary:        #0369A1;
+      --primary-hover:  #0284C7;
+      --primary-light:  #E0F2FE;
+      --bg-page:        #F8FAFC;
+      --bg-card:        #FFFFFF;
+      --bg-rationale:   #EFF6FF;
+      --border:         #E2E8F0;
+      --border-strong:  #CBD5E1;
+      --text-primary:   #0F172A;
+      --text-secondary: #475569;
+      --text-muted:     #94A3B8;
+      --success:        #059669;
+      --font: 'Heebo', 'Assistant', sans-serif;
+      --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+      --radius-xl: 16px; --radius-full: 9999px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+    }
+    html { font-family: var(--font); font-size: 16px; line-height: 1.65; color: var(--text-primary); background: var(--bg-page); -webkit-font-smoothing: antialiased; }
+
+    /* NAV */
+    .global-nav { position: sticky; inset-block-start: 0; z-index: 200; background: var(--bg-card); border-block-end: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+    .global-nav-inner { max-width: 1280px; margin-inline: auto; padding-inline: 32px; padding-block: 14px; display: flex; align-items: center; gap: 24px; }
+    .nav-logo { font-size: 17px; font-weight: 700; color: var(--primary); white-space: nowrap; flex-shrink: 0; }
+    .nav-logo span { font-weight: 300; color: var(--text-muted); }
+    .nav-links { display: flex; gap: 4px; margin-inline-start: auto; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); padding: 6px 12px; border-radius: var(--radius-md); transition: all .15s; }
+    .nav-links a:hover { background: var(--bg-page); color: var(--text-primary); }
+
+    /* PAGE HEADER */
+    .page-header { background: var(--bg-card); border-block-end: 1px solid var(--border); padding-block: 18px; padding-inline: 32px; }
+    .page-header-inner { max-width: 1280px; margin-inline: auto; display: flex; align-items: center; gap: 16px; }
+    .back-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 6px 10px; border-radius: var(--radius-md); border: 1px solid var(--border); background: transparent; transition: all .15s; white-space: nowrap; }
+    .back-btn:hover { background: var(--bg-page); color: var(--text-primary); border-color: var(--border-strong); }
+    .back-btn svg { transform: scaleX(-1); }
+    .page-title { font-size: 20px; font-weight: 700; color: var(--text-primary); }
+    .page-subtitle { font-size: 14px; color: var(--text-muted); margin-inline-start: 4px; }
+    .add-more-btn { margin-inline-start: auto; display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--primary); background: var(--primary-light); border: 1px solid #BAE6FD; border-radius: var(--radius-full); padding: 6px 14px; transition: all .15s; }
+    .add-more-btn:hover { background: var(--primary); color: #fff; }
+
+    /* MAIN */
+    .comparison-page { max-width: 1280px; margin-inline: auto; padding-inline: 32px; padding-block: 32px; }
+
+    /* COMP TABLE — dynamic grid set via JS */
+    .comp-table { display: grid; border: 1.5px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; background: var(--bg-card); box-shadow: var(--shadow-md); }
+
+    /* corner cell */
+    .col-corner { background: var(--bg-page); border-block-end: 2px solid var(--border-strong); border-inline-end: 1px solid var(--border); padding: 20px 16px; }
+    .col-corner-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-muted); }
+
+    /* column header */
+    .col-header { padding: 20px 22px; border-block-end: 2px solid var(--border-strong); border-inline-end: 1px solid var(--border); background: var(--bg-card); position: relative; }
+    .col-header:last-child { border-inline-end: none; }
+    .col-header.winner { background: #F0F9FF; border-block-start: 4px solid var(--primary); }
+    .winner-badge { position: absolute; inset-block-start: -4px; inset-inline-start: 18px; background: var(--primary); color: #fff; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 0 0 var(--radius-md) var(--radius-md); letter-spacing: .05em; text-transform: uppercase; }
+    .col-header-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-block-end: 10px; }
+    .col-indicator-name { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1.3; margin-block-end: 14px; }
+    .col-header-actions { display: flex; align-items: center; gap: 8px; }
+
+    /* empty slot column */
+    .col-empty-slot { border-block-end: 2px solid var(--border-strong); border-inline-end: 1px solid var(--border); padding: 20px 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: var(--bg-page); cursor: pointer; transition: background .15s; }
+    .col-empty-slot:last-child { border-inline-end: none; }
+    .col-empty-slot:hover { background: var(--primary-light); }
+    .empty-slot-text { font-size: 13px; color: var(--text-muted); text-align: center; line-height: 1.5; }
+
+    /* badges */
+    .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-full); white-space: nowrap; }
+    .badge-outcome { background: #DCFCE7; color: var(--success); }
+    .badge-output  { background: var(--primary-light); color: var(--primary); }
+    .badge-impact  { background: #F3E8FF; color: #7C3AED; }
+    .badge-input   { background: #FEF3C7; color: #D97706; }
+    .badge-domain  { background: color-mix(in srgb, var(--dc) 12%, white); color: var(--dc); border: 1px solid color-mix(in srgb, var(--dc) 25%, white); }
+
+    /* buttons */
+    .choose-btn { flex: 1; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-md); padding: 8px 14px; font-size: 13px; font-weight: 700; font-family: var(--font); transition: background .15s; }
+    .choose-btn:hover { background: var(--primary-hover); }
+    .choose-btn.secondary { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-strong); font-weight: 600; }
+    .choose-btn.secondary:hover { background: var(--bg-page); color: var(--text-primary); }
+    .remove-btn { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-muted); transition: all .15s; flex-shrink: 0; }
+    .remove-btn:hover { background: #FEF2F2; border-color: #FCA5A5; color: #DC2626; }
+
+    /* section divider — spans all columns */
+    .section-divider { background: var(--bg-page); border-block-end: 1px solid var(--border); padding: 7px 16px; }
+    .section-divider.highlight { background: var(--bg-rationale); border-inline-start: 4px solid var(--primary); }
+    .section-divider-text { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); }
+    .section-divider.highlight .section-divider-text { color: var(--primary); }
+
+    /* row label */
+    .row-label { background: var(--bg-page); border-block-end: 1px solid var(--border); border-inline-end: 1px solid var(--border); padding: 14px 16px; }
+    .row-label.alt { background: var(--bg-card); }
+    .row-label.highlight { background: var(--bg-rationale); border-inline-start: 4px solid var(--primary); }
+    .row-label.last-row { border-block-end: none; }
+    .row-label-text { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-muted); }
+    .row-label.highlight .row-label-text { color: var(--primary); }
+
+    /* row cell */
+    .row-cell { padding: 14px 22px; border-block-end: 1px solid var(--border); border-inline-end: 1px solid var(--border); font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+    .row-cell:last-child { border-inline-end: none; }
+    .row-cell.alt { background: var(--bg-card); }
+    .row-cell.highlight { background: var(--bg-rationale); color: var(--text-primary); font-weight: 500; }
+    .row-cell.last-row { border-block-end: none; }
+    .row-cell.empty-col { background: var(--bg-page); color: var(--text-muted); font-size: 20px; text-align: center; }
+    .row-cell.empty-col.alt { background: var(--bg-page); }
+    .row-cell.empty-col.highlight { background: color-mix(in srgb, var(--bg-rationale) 60%, var(--bg-page)); }
+
+    /* stage pills */
+    .stage-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .stage-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: var(--radius-full); }
+    .stage-active { background: var(--primary-light); color: var(--primary); }
+    .stage-inactive { background: var(--bg-page); border: 1px solid var(--border); color: var(--text-muted); }
+
+    /* programs */
+    .prog-count { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
+    .prog-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 9px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    /* EMPTY STATE (no items) */
+    .empty-comparison { text-align: center; padding-block: 80px; }
+    .empty-comparison-title { font-size: 22px; font-weight: 700; color: var(--text-primary); margin-block-end: 12px; }
+    .empty-comparison-text { font-size: 15px; color: var(--text-secondary); margin-block-end: 28px; }
+    .empty-comparison-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-md); padding: 12px 24px; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; transition: background .15s; }
+    .empty-comparison-btn:hover { background: var(--primary-hover); }
+
+    /* DECISION BOX */
+    .decision-section { margin-block-start: 28px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--radius-xl); padding: 24px 28px; display: flex; align-items: center; gap: 24px; box-shadow: var(--shadow-sm); }
+    .decision-icon { width: 44px; height: 44px; border-radius: var(--radius-lg); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .decision-text-wrap { flex: 1; }
+    .decision-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-block-end: 4px; }
+    .decision-sub { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+    .decision-actions { display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+    .decision-btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; font-family: var(--font); transition: all .15s; border: none; cursor: pointer; }
+    .decision-btn-primary { background: var(--primary); color: #fff; }
+    .decision-btn-primary:hover { background: var(--primary-hover); }
+    .decision-btn-secondary { background: var(--bg-page); color: var(--text-secondary); border: 1px solid var(--border-strong); }
+    .decision-btn-secondary:hover { background: var(--border); color: var(--text-primary); }
+  </style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav class="global-nav" role="navigation" aria-label="ניווט ראשי">
+  <div class="global-nav-inner">
+    <a href="home.html" class="nav-logo">קטלוג מדדים <span>| JDC DIDA</span></a>
+    <nav class="nav-links">
+      <a href="home.html">בית</a>
+      <a href="search-results.html">חיפוש</a>
+      <a href="browse.html">עיון</a>
+      <a href="node-chart.html">מפה סמנטית</a>
+      <a href="#">אודות</a>
+    </nav>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <a href="search-results.html" class="back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      חזרה לתוצאות
+    </a>
+    <h1 class="page-title">השוואת מדדים</h1>
+    <span class="page-subtitle" id="count-label">0 מדדים</span>
+    <a href="search-results.html" class="add-more-btn" id="add-more-btn" aria-label="הוסף מדד נוסף">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      הוסף מדד
+    </a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="comparison-page" id="comparison-page">
+  <!-- rendered by JS -->
+</main>
+
+<script>
+// ─── Indicator data ───────────────────────────────────────────────────────
+const INDICATORS = {
+  'card-1': {
+    name: 'מדד עוני ילדים ונוער',
+    type: 'outcome', typeLabel: 'תוצאה',
+    domain: 'welfare', domainLabel: 'רווחה כלכלית', domainColor: '#7C3AED',
+    definition: 'שיעור בני הנוער (12–18) החיים בעוני לפי קו העוני הלאומי — בהשוואה לאוכלוסייה הכללית ולפי פיזור גיאוגרפי.',
+    rationale: 'מעריכים השפעה ישירה על המצב הכלכלי של משפחות בני נוער — במיוחד בפריפריה ובאשכולות 1–4.',
+    stages: { planning: false, implementation: false, evaluation: true },
+    lessAppropriate: 'לתכניות שמדדו שינוי בטווח קצר (פחות מ-12 חודשים) — שינוי בשיעור עוני אינו נראה בפרק זמן כזה.',
+    tool: 'נתוני מינהל — ביטוח לאומי, הלמ"ס',
+    frequency: 'שנתי',
+    ageRange: '12–18',
+    source: 'הלמ"ס, ביטוח לאומי',
+    programs: 8, programNames: 'ילדים בראש סדר העדיפויות, מגשימים'
+  },
+  'card-2': {
+    name: 'שיעור נשירה מהמערכת החינוכית',
+    type: 'output', typeLabel: 'תפוקה',
+    domain: 'edu', domainLabel: 'חינוך', domainColor: '#D97706',
+    definition: 'אחוז בני נוער (12–18) שנשרו ממסגרת חינוכית מוכרת במהלך שנת לימודים, לפי מסד נתוני משרד החינוך.',
+    rationale: 'מתמקדים בשמירה על מסגרת ומניעת נשירה כגורם מגן — מדד תפוקה לשלב יישום התכנית.',
+    stages: { planning: false, implementation: true, evaluation: false },
+    lessAppropriate: 'כמדד יחיד לתכנית שמטרתה שינוי כלכלי ארוך-טווח — הוא מספר על מסגרת, לא על פרנסה.',
+    tool: 'נתוני מינהל — משרד החינוך',
+    frequency: 'שנתי',
+    ageRange: '12–18',
+    source: 'משרד החינוך',
+    programs: 12, programNames: 'עיגון, נגישות לחינוך, תלמוד תורה'
+  },
+  'card-3': {
+    name: 'תחושת שייכות חברתית',
+    type: 'outcome', typeLabel: 'תוצאה',
+    domain: 'social', domainLabel: 'רווחה חברתית', domainColor: '#059669',
+    definition: 'מדד מורכב של תחושת חיבור לקהילה, למוסדות ולמעגלים חברתיים — נמדד בשאלון עצמי-דיווח (Social Connectedness Scale).',
+    rationale: 'מודדים רווחה סובייקטיבית של בני נוער בקבוצות מוחלשות — בפרט כשהתכנית שמה דגש על חיזוק קשרים חברתיים.',
+    stages: { planning: false, implementation: false, evaluation: true },
+    lessAppropriate: 'כאשר רוצים מדד אובייקטיבי — מדד זה מבוסס על תפיסה עצמית ולא על נתוני מינהל.',
+    tool: 'שאלון (Social Connectedness Scale)',
+    frequency: 'חצי-שנתי',
+    ageRange: '12–18',
+    source: 'דיווח עצמי',
+    programs: 5, programNames: 'מגשימים, נוער בסיכון, קשר'
+  },
+  'card-4': {
+    name: 'מדד חוסן משפחתי',
+    type: 'outcome', typeLabel: 'תוצאה',
+    domain: 'resilience', domainLabel: 'חוסן קהילתי', domainColor: '#DC2626',
+    definition: 'מדד מורכב של יכולת המשפחה לגייס משאבים, לשמור על תפקוד ולהתמודד עם לחצים כלכליים וסביבתיים לאורך זמן.',
+    rationale: 'מעריכים השפעת תכנית על יציבות המשפחה לאורך זמן — ולא רק על מצב כלכלי נקודתי.',
+    stages: { planning: false, implementation: false, evaluation: true },
+    lessAppropriate: 'לתכניות עם מחזור קצר — מדד חוסן מצריך מעקב של לפחות שנה.',
+    tool: 'שאלון',
+    frequency: 'שנתי',
+    ageRange: 'כל הגילאים',
+    source: 'דיווח עצמי',
+    programs: 4, programNames: 'מגשימים, חוסן קהילתי, יחד'
+  },
+  'card-5': {
+    name: 'שיעור תעסוקת בני נוער',
+    type: 'output', typeLabel: 'תפוקה',
+    domain: 'employ', domainLabel: 'תעסוקה', domainColor: '#0369A1',
+    definition: 'אחוז בני הנוער (16–22) המועסקים בתעסוקה חלקית או מלאה, מתוך משתתפי התכנית — לפי נתוני ביטוח לאומי ודיווח עצמי.',
+    rationale: 'מתמקדים בהכנה לשוק העבודה ופיתוח כישורים — מדד תפוקה מרכזי לתכניות קידום תעסוקה בגילאי 16+.',
+    stages: { planning: false, implementation: true, evaluation: false },
+    lessAppropriate: 'לבני נוער מתחת לגיל 16 — מגבלות חוקיות מונעות תעסוקה רשמית.',
+    tool: 'נתוני מינהל — ביטוח לאומי',
+    frequency: 'רבעוני',
+    ageRange: '16–22',
+    source: 'ביטוח לאומי',
+    programs: 7, programNames: 'נוכחים, מסלול להצלחה, מרכזי תעסוקה'
+  },
+  'card-6': {
+    name: 'ניידות כלכלית בין-דורית',
+    type: 'impact', typeLabel: 'אימפקט',
+    domain: 'welfare', domainLabel: 'רווחה כלכלית', domainColor: '#7C3AED',
+    definition: 'מידת השינוי במצב הכלכלי של ילדים לעומת הוריהם — מדד אימפקט ארוך-טווח, מחושב ממעקב אחר קבוצות גיל לאורך שנים.',
+    rationale: 'מעריכים השפעה מערכתית ארוכת-טווח על פערים מבניים — מתאים לתכניות בנות 5+ שנים.',
+    stages: { planning: false, implementation: false, evaluation: true },
+    lessAppropriate: 'לתכניות קצרות-מועד (פחות מ-5 שנים) — השינוי הבין-דורי אינו נמדד בטווח קצר.',
+    tool: 'נתוני מינהל',
+    frequency: 'רב-שנתי',
+    ageRange: '0–30',
+    source: 'הלמ"ס, ביטוח לאומי',
+    programs: 3, programNames: 'מגשימים, יוצאי אתיופיה, נוכחים'
+  }
+};
+
+const MAX_COMPARE = 3;
+
+// ─── Session storage helpers ────────────────────────────────────────────
+function getItems() {
+  return JSON.parse(sessionStorage.getItem('comparison') || '[]');
+}
+function saveItems(items) {
+  sessionStorage.setItem('comparison', JSON.stringify(items));
+}
+
+// ─── Render helpers ──────────────────────────────────────────────────────
+function badgeHTML(type, label) {
+  const map = { outcome: 'badge-outcome', output: 'badge-output', impact: 'badge-impact', input: 'badge-input' };
+  return `<span class="badge ${map[type] || ''}">${label}</span>`;
+}
+function domainBadgeHTML(label, color) {
+  return `<span class="badge badge-domain" style="--dc:${color}">${label}</span>`;
+}
+function stagePillsHTML(stages) {
+  const labels = { planning: 'תכנון', implementation: 'יישום', evaluation: 'הערכה' };
+  return '<div class="stage-pills">' +
+    Object.entries(stages).map(([k, active]) =>
+      `<span class="stage-pill ${active ? 'stage-active' : 'stage-inactive'}">${labels[k]}${active ? ' ✓' : ''}</span>`
+    ).join('') +
+    '</div>';
+}
+function programsHTML(ind) {
+  return `<div class="prog-count"><span class="prog-avatar">JD</span><span><strong>${ind.programs}</strong> תכניות JDC</span></div>
+    <p style="margin-block-start:7px;font-size:12px;color:var(--text-muted);">כולל: ${ind.programNames}</p>`;
+}
+
+// ─── Main render ─────────────────────────────────────────────────────────
+function render() {
+  const items  = getItems();
+  const page   = document.getElementById('comparison-page');
+  const countEl = document.getElementById('count-label');
+  const addBtn  = document.getElementById('add-more-btn');
+
+  countEl.textContent = `${items.length} מדד${items.length !== 1 ? 'ים' : ''}`;
+  addBtn.style.display = items.length >= MAX_COMPARE ? 'none' : '';
+
+  // ── empty state ──
+  if (items.length === 0) {
+    page.innerHTML = `
+      <div class="empty-comparison">
+        <p class="empty-comparison-title">אין מדדים להשוואה</p>
+        <p class="empty-comparison-text">חזרי לתוצאות החיפוש והוסיפי מדדים למגש ההשוואה</p>
+        <button class="empty-comparison-btn" onclick="window.location.href='search-results.html'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          חזרה לתוצאות החיפוש
+        </button>
+      </div>`;
+    return;
+  }
+
+  // ── build table ──
+  const emptySlots = MAX_COMPARE - items.length;
+  const totalCols  = 1 + items.length + emptySlots; // label + filled + empty
+  const gridCols   = `200px ${Array(items.length).fill('1fr').join(' ')} ${emptySlots > 0 ? Array(emptySlots).fill('1fr').join(' ') : ''}`;
+
+  // row definitions
+  const ROWS = [
+    { type: 'section', label: 'מה זה מודד' },
+    { type: 'row', label: 'הגדרה',   key: 'definition', alt: false },
+    { type: 'row', label: 'סוג מדד', key: 'typeRow',    alt: true  },
+    { type: 'section', label: 'מתי מתאים — למה המדד הזה?', highlight: true },
+    { type: 'row', label: 'מתאים כאשר',  key: 'rationale',       alt: false, highlight: true },
+    { type: 'row', label: 'שלב בתכנית', key: 'stagesRow',        alt: true,  highlight: true },
+    { type: 'row', label: '⚠ פחות מתאים', key: 'lessAppropriate', alt: false, highlight: true },
+    { type: 'section', label: 'מתודולוגיה' },
+    { type: 'row', label: 'כלי מדידה',   key: 'tool',      alt: true  },
+    { type: 'row', label: 'תדירות',       key: 'frequency', alt: false },
+    { type: 'row', label: 'טווח גילאים', key: 'ageRange',   alt: true  },
+    { type: 'row', label: 'מקור',         key: 'source',    alt: false },
+    { type: 'section', label: 'שימוש בתכניות JDC' },
+    { type: 'row', label: 'תכניות', key: 'programsRow', alt: false, last: true },
+  ];
+
+  let html = `<div class="comp-table" style="grid-template-columns:${gridCols}" role="table" aria-label="טבלת השוואת מדדים">`;
+
+  // ── headers ──
+  html += `<div class="col-corner" role="columnheader"><p class="col-corner-label">קטגוריה</p></div>`;
+
+  items.forEach((item, idx) => {
+    const ind = INDICATORS[item.id];
+    if (!ind) return;
+    const isWinner = idx === 0;
+    html += `
+      <div class="col-header${isWinner ? ' winner' : ''}" role="columnheader">
+        ${isWinner ? '<span class="winner-badge">מדד מומלץ</span>' : ''}
+        <div class="col-header-badges">
+          ${badgeHTML(ind.type, ind.typeLabel)}
+          ${domainBadgeHTML(ind.domainLabel, ind.domainColor)}
+        </div>
+        <h2 class="col-indicator-name">${ind.name}</h2>
+        <div class="col-header-actions">
+          <button class="choose-btn${isWinner ? '' : ' secondary'}" onclick="chooseIndicator('${item.id}')">
+            ${isWinner ? '✓ בחרי מדד זה' : 'בחרי מדד זה'}
+          </button>
+          <button class="remove-btn" onclick="removeItem('${item.id}')" aria-label="הסר ${ind.name}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>`;
+  });
+
+  // empty slot headers
+  for (let i = 0; i < emptySlots; i++) {
+    html += `
+      <div class="col-empty-slot" role="columnheader" onclick="window.location.href='search-results.html'" aria-label="הוסף מדד להשוואה">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <p class="empty-slot-text">הוסף מדד<br>להשוואה</p>
+      </div>`;
+  }
+
+  // ── rows ──
+  ROWS.forEach(row => {
+    if (row.type === 'section') {
+      html += `<div class="section-divider${row.highlight ? ' highlight' : ''}" style="grid-column:1/-1" role="rowgroup">
+        <span class="section-divider-text">${row.label}</span>
+      </div>`;
+      return;
+    }
+
+    const alt  = row.alt  ? ' alt'       : '';
+    const hl   = row.highlight ? ' highlight' : '';
+    const last = row.last ? ' last-row'  : '';
+
+    html += `<div class="row-label${alt}${hl}${last}" role="rowheader">
+      <span class="row-label-text">${row.label}</span>
+    </div>`;
+
+    items.forEach(item => {
+      const ind = INDICATORS[item.id];
+      if (!ind) { html += `<div class="row-cell${alt}${hl}${last}" role="cell">—</div>`; return; }
+
+      let content = '';
+      switch (row.key) {
+        case 'typeRow':
+          content = `${badgeHTML(ind.type, ind.typeLabel)}<p style="margin-block-start:5px;font-size:12px;color:var(--text-muted)">${typeDesc(ind.type)}</p>`;
+          break;
+        case 'stagesRow':
+          content = stagePillsHTML(ind.stages);
+          break;
+        case 'programsRow':
+          content = programsHTML(ind);
+          break;
+        default:
+          content = ind[row.key] || '—';
+      }
+      html += `<div class="row-cell${alt}${hl}${last}" role="cell">${content}</div>`;
+    });
+
+    // empty slot cells
+    for (let i = 0; i < emptySlots; i++) {
+      html += `<div class="row-cell empty-col${alt}${hl}${last}" role="cell">—</div>`;
+    }
+  });
+
+  html += '</div>'; // /comp-table
+
+  // ── decision box ──
+  const firstInd = items.length > 0 ? INDICATORS[items[0].id] : null;
+  if (firstInd) {
+    html += `
+      <div class="decision-section" role="region" aria-label="קבלת החלטה">
+        <div class="decision-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="decision-text-wrap">
+          <p class="decision-title">מוכנה להחלטה?</p>
+          <p class="decision-sub">בחרי את המדד שמתאים לתכנית שלך — תוכלי לחזור לכרטיס המלא, לשמור ב-PDF, או לשלוח קישור לצוות.</p>
+        </div>
+        <div class="decision-actions">
+          <button class="decision-btn decision-btn-primary" onclick="chooseIndicator('${items[0].id}')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            בחרי: ${firstInd.name}
+          </button>
+          <button class="decision-btn decision-btn-secondary" onclick="window.print()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            הדפסה
+          </button>
+        </div>
+      </div>`;
+  }
+
+  page.innerHTML = html;
+}
+
+function typeDesc(type) {
+  return { outcome: 'שינוי שנצפה בקרב אוכלוסיית היעד', output: 'תוצר ישיר של פעילות התכנית', impact: 'שינוי מערכתי ארוך-טווח', input: 'משאב שהושקע בתכנית' }[type] || '';
+}
+
+// ─── Actions ─────────────────────────────────────────────────────────────
+function removeItem(id) {
+  const items = getItems().filter(i => i.id !== id);
+  saveItems(items);
+  render();
+}
+
+function chooseIndicator(id) {
+  const ind = INDICATORS[id];
+  if (!ind) return;
+  alert(`✓ בחרת: ${ind.name}\n\nמדד זה נשמר לסל המדדים שלך.\n\nבגרסה הסופית — תועברי לכרטיס המדד המלא.`);
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────────
+render();
+</script>
+
+</body>
+</html>

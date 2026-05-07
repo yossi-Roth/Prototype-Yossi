@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>קטלוג המדדים החברתיים | JDC DIDA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ul, ol { list-style: none; }
+    button { cursor: pointer; font-family: inherit; }
+    a { text-decoration: none; }
+
+    :root {
+      --primary:        #0369A1;
+      --primary-hover:  #0284C7;
+      --primary-light:  #E0F2FE;
+      --primary-mid:    #0EA5E9;
+
+      --bg-page:        #F8FAFC;
+      --bg-card:        #FFFFFF;
+
+      --border:         #E2E8F0;
+      --border-strong:  #CBD5E1;
+
+      --text-primary:   #0F172A;
+      --text-secondary: #475569;
+      --text-muted:     #94A3B8;
+      --text-inverse:   #FFFFFF;
+
+      --success:        #059669;
+      --domain-welfare: #7C3AED;
+      --domain-edu:     #D97706;
+      --domain-health:  #DC2626;
+      --domain-employ:  #0369A1;
+      --domain-early:   #854D0E;
+
+      --font: 'Heebo', 'Assistant', sans-serif;
+
+      --radius-sm:   4px;
+      --radius-md:   8px;
+      --radius-lg:   12px;
+      --radius-xl:   16px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,.10);
+    }
+
+    html {
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    .global-nav {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 100;
+      background: var(--bg-card);
+      border-block-end: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .global-nav-inner {
+      max-width: 1280px;
+      margin-inline: auto;
+      padding-inline: 32px;
+      padding-block: 14px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .nav-logo span { font-weight: 300; color: var(--text-muted); }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      margin-inline-start: auto;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      transition: all .15s;
+    }
+    .nav-links a:hover { background: var(--bg-page); color: var(--text-primary); }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: linear-gradient(160deg, #EFF6FF 0%, #F0F9FF 40%, var(--bg-page) 100%);
+      border-block-end: 1px solid var(--border);
+      padding-block: 72px 56px;
+      padding-inline: 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    /* subtle decorative blobs */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset-block-start: -80px;
+      inset-inline-end: -80px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: rgba(3,105,161,.06);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset-block-end: -60px;
+      inset-inline-start: -60px;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: rgba(124,58,237,.05);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 760px;
+      margin-inline: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--primary);
+      background: var(--primary-light);
+      border: 1px solid #BAE6FD;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      margin-block-end: 20px;
+    }
+
+    .hero-title {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--text-primary);
+      margin-block-end: 16px;
+      letter-spacing: -.01em;
+    }
+    .hero-title span { color: var(--primary); }
+
+    .hero-sub {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-block-end: 36px;
+      max-width: 580px;
+      margin-inline: auto;
+    }
+
+    /* Search */
+    .hero-search-wrap {
+      position: relative;
+      margin-block-end: 16px;
+    }
+    .hero-search {
+      width: 100%;
+      padding-block: 16px;
+      padding-inline-start: 52px;
+      padding-inline-end: 120px;
+      border: 2px solid var(--border-strong);
+      border-radius: var(--radius-full);
+      font-family: var(--font);
+      font-size: 16px;
+      background: var(--bg-card);
+      outline: none;
+      color: var(--text-primary);
+      box-shadow: var(--shadow-md);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .hero-search::placeholder { color: var(--text-muted); }
+    .hero-search:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(3,105,161,.12), var(--shadow-md);
+    }
+    .hero-search-icon {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-start: 18px;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      display: flex;
+    }
+    .hero-search-btn {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-end: 8px;
+      transform: translateY(-50%);
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-full);
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background .15s;
+    }
+    .hero-search-btn:hover { background: var(--primary-hover); }
+
+    /* Suggestion tags */
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-block-end: 48px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 13px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all .15s;
+      box-shadow: var(--shadow-sm);
+    }
+    .tag:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+    .tag-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tag-question { font-style: normal; }
+
+    /* Entry modes */
+    .entry-modes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-width: 580px;
+      margin-inline: auto;
+    }
+    .entry-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 20px;
+      text-align: start;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: var(--shadow-sm);
+    }
+    .entry-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .entry-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-block-end: 12px;
+    }
+    .entry-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-block-end: 4px;
+    }
+    .entry-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ─── STATS ─── */
+    .stats-section {
+      background: var(--primary);
+      padding-block: 56px;
+      padding-inline: 32px;
+    }
+    .stats-inner {
+      max-width: 1000px;
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      text-align: center;
+    }
+    .stat-item {}
+    .stat-number {
+      font-size: 52px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      margin-block-end: 8px;
+      letter-spacing: -.02em;
+    }
+    .stat-number sup {
+      font-size: 28px;
+      vertical-align: super;
+    }
+    .stat-label {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255,255,255,.75);
+      line-height: 1.4;
+    }
+    .stat-divider {
+      width: 1px;
+      background: rgba(255,255,255,.2);
+      margin-inline: auto;
+    }
+
+    /* ─── HOW IT WORKS ─── */
+    .how-section {
+      padding-block: 72px;
+      padding-inline: 32px;
+      background: var(--bg-card);
+    }
+    .section-header {
+      text-align: center;
+      margin-block-end: 48px;
+    }
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--primary);
+      margin-block-end: 10px;
+    }
+    .section-title {
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-block-end: 10px;
+    }
+    .section-sub {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin-inline: auto;
+      line-height: 1.6;
+    }
+
+    .how-steps {
+      max-width: 900px;
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .how-step {
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px 24px;
+      position: relative;
+    }
+    .step-number {
+      position: absolute;
+      inset-block-start: -14px;
+      inset-inline-start: 24px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-block-end: 14px;
+    }
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-block-end: 8px;
+    }
+    .step-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* connector line between steps */
+    .how-steps-wrapper {
+      max-width: 900px;
+      margin-inline: auto;
+      position: relative;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-section {
+      padding-block: 72px;
+      padding-inline: 32px;
+      background: var(--bg-page);
+      border-block-start: 1px solid var(--border);
+    }
+    .about-inner {
+      max-width: 1000px;
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .about-text .section-eyebrow { text-align: start; }
+    .about-text .section-title { text-align: start; font-size: 26px; margin-block-end: 16px; }
+    .about-body {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-block-end: 24px;
+    }
+    .about-body + .about-body { margin-block-start: -10px; }
+
+    .org-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .org-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .org-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+    }
+    .org-name { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .org-desc { font-size: 12px; color: var(--text-muted); margin-block-start: 2px; }
+
+    /* Methodology highlight box */
+    .methodology-box {
+      background: var(--primary-light);
+      border: 1px solid #BAE6FD;
+      border-inline-start: 4px solid var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .methodology-box strong { color: var(--primary); }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      background: var(--text-primary);
+      color: rgba(255,255,255,.6);
+      padding-block: 32px;
+      padding-inline: 32px;
+      text-align: center;
+      font-size: 13px;
+    }
+    .footer a { color: rgba(255,255,255,.6); }
+    .footer a:hover { color: #fff; }
+    .footer-logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-block-end: 8px;
+    }
+
+    /* ─── ICON HELPER ─── */
+    .icon { width: 20px; height: 20px; display: inline-flex; flex-shrink: 0; }
+    .icon-sm { width: 16px; height: 16px; }
+
+    /* ─── FOCUS ─── */
+    :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ NAV ══════════════ -->
+<header class="global-nav" role="banner">
+  <nav class="global-nav-inner" aria-label="ניווט ראשי">
+    <a href="home.html" class="nav-logo">קטלוג מדדים <span>| JDC DIDA</span></a>
+    <ul class="nav-links" role="list">
+      <li><a href="browse.html">עיון</a></li>
+      <li><a href="node-chart.html">מפה סמנטית</a></li>
+      <li><a href="#">אודות</a></li>
+    </ul>
+  </nav>
+</header>
+
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero" id="hero" aria-labelledby="hero-title">
+  <div class="hero-inner">
+
+    <div class="hero-label" aria-hidden="true">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      JDC DIDA · קטלוג מדדים חברתיים
+    </div>
+
+    <h1 class="hero-title" id="hero-title">
+      הכלי לבחירת<br><span>מדדים חברתיים</span>
+    </h1>
+
+    <p class="hero-sub">
+      תארו את השינוי שאתם רוצים לחולל —<br>
+      אנחנו נביא את המדדים הרלוונטיים ביותר
+    </p>
+
+    <!-- Search -->
+    <div class="hero-search-wrap" role="search">
+      <span class="hero-search-icon" aria-hidden="true">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </span>
+      <input class="hero-search"
+             id="hero-search-input"
+             type="search"
+             placeholder="תחום, אוכלוסייה, או שאלת מדידה..."
+             aria-label="חיפוש מדדים"
+             onkeydown="if(event.key==='Enter') doSearch()">
+      <button class="hero-search-btn" onclick="doSearch()" aria-label="חפש">חיפוש</button>
+    </div>
+
+    <!-- Tags -->
+    <div class="hero-tags" role="list" aria-label="חיפושים מוצעים">
+      <!-- Categories -->
+      <button class="tag" role="listitem" onclick="fillSearch('רווחה רגשית')">
+        <span class="tag-dot" style="background: #7C3AED;" aria-hidden="true"></span>רווחה רגשית
+      </button>
+      <button class="tag" role="listitem" onclick="fillSearch('חינוך ולמידה')">
+        <span class="tag-dot" style="background: #D97706;" aria-hidden="true"></span>חינוך
+      </button>
+      <button class="tag" role="listitem" onclick="fillSearch('בריאות')">
+        <span class="tag-dot" style="background: #DC2626;" aria-hidden="true"></span>בריאות
+      </button>
+      <button class="tag" role="listitem" onclick="fillSearch('תעסוקה')">
+        <span class="tag-dot" style="background: #0369A1;" aria-hidden="true"></span>תעסוקה
+      </button>
+      <button class="tag" role="listitem" onclick="fillSearch('גיל הרך')">
+        <span class="tag-dot" style="background: #854D0E;" aria-hidden="true"></span>גיל הרך
+      </button>
+      <!-- Questions -->
+      <button class="tag tag-question" role="listitem" onclick="fillSearch('איך מודדים עוני בקרב נוער?')">
+        💬 איך מודדים עוני בקרב נוער?
+      </button>
+      <button class="tag tag-question" role="listitem" onclick="fillSearch('מדדי אי-שוויון')">
+        💬 מדדי אי-שוויון
+      </button>
+      <button class="tag tag-question" role="listitem" onclick="fillSearch('רווחה נפשית בקהילה הגאה')">
+        💬 רווחה נפשית בקהילה הגאה
+      </button>
+    </div>
+
+    <!-- Entry modes -->
+    <div class="entry-modes" role="list" aria-label="מסלולי ניווט">
+      <article class="entry-card" role="listitem" tabindex="0" onclick="goTo('browse')" onkeydown="if(event.key==='Enter') goTo('browse')" aria-label="עיון — נווטו בין תחומי חיים">
+        <div class="entry-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/>
+            <line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </div>
+        <div class="entry-title">עיון לפי תחום</div>
+        <div class="entry-desc">נווטו בין ממדים ותחומי חיים — עץ מובנה שמוביל למדד</div>
+      </article>
+
+      <article class="entry-card" role="listitem" tabindex="0" onclick="goTo('discover')" onkeydown="if(event.key==='Enter') goTo('discover')" aria-label="גילוי — מפה ויזואלית של קשרים">
+        <div class="entry-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="3"/>
+            <circle cx="19" cy="19" r="3"/>
+            <circle cx="5" cy="19" r="3"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="12" x2="19" y2="17"/>
+            <line x1="12" y1="12" x2="5" y2="17"/>
+          </svg>
+        </div>
+        <div class="entry-title">גילוי ויזואלי</div>
+        <div class="entry-desc">מפה סמנטית של קשרים בין מדדים — לחצו על תחום והרחיבו</div>
+      </article>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════ STATS ══════════════ -->
+<section class="stats-section" id="stats-section" aria-label="נתוני הקטלוג">
+  <dl class="stats-inner">
+    <div class="stat-item">
+      <dt class="stat-label">מדדים חברתיים</dt>
+      <dd class="stat-number">250<sup>+</sup></dd>
+    </div>
+    <div class="stat-item">
+      <dt class="stat-label">תחומי חיים</dt>
+      <dd class="stat-number">14</dd>
+    </div>
+    <div class="stat-item">
+      <dt class="stat-label">ממדי תוצאה</dt>
+      <dd class="stat-number">4</dd>
+    </div>
+    <div class="stat-item">
+      <dt class="stat-label">תכניות JDC שמשתמשות</dt>
+      <dd class="stat-number">40<sup>+</sup></dd>
+    </div>
+  </dl>
+</section>
+
+
+<!-- ══════════════ HOW IT WORKS ══════════════ -->
+<section class="how-section" id="how-section" aria-labelledby="how-title">
+  <div class="section-header">
+    <p class="section-eyebrow">איך זה עובד</p>
+    <h2 class="section-title" id="how-title">שלושה מסלולים — תוצאה אחת</h2>
+    <p class="section-sub">בין אם אתם מחפשים, עוברים על שטח, או גולשים בין קשרים — הכלי מוביל לאותו כרטיס מדד מפורט</p>
+  </div>
+
+  <div class="how-steps-wrapper">
+    <div class="how-steps" role="list">
+
+      <article class="how-step" role="listitem" aria-labelledby="step1-title">
+        <span class="step-number" aria-label="שלב 1">1</span>
+        <div class="step-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <h3 class="step-title" id="step1-title">חיפוש חופשי</h3>
+        <p class="step-desc">הקלידו תחום, שאלה, או אוכלוסייה. המערכת מחזירה מדדים רלוונטיים עם הסבר התאמה.</p>
+      </article>
+
+      <article class="how-step" role="listitem" aria-labelledby="step2-title">
+        <span class="step-number" aria-label="שלב 2">2</span>
+        <div class="step-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/>
+            <line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/>
+            <line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </div>
+        <h3 class="step-title" id="step2-title">עיון לפי תחום</h3>
+        <p class="step-desc">נווטו בעץ ממדים ← תחומי חיים ← מדדים. מתאים למי שרוצה לראות מה קיים בשטח.</p>
+      </article>
+
+      <article class="how-step" role="listitem" aria-labelledby="step3-title">
+        <span class="step-number" aria-label="שלב 3">3</span>
+        <div class="step-icon" aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="5" r="3"/>
+            <circle cx="19" cy="19" r="3"/>
+            <circle cx="5" cy="19" r="3"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="12" x2="19" y2="17"/>
+            <line x1="12" y1="12" x2="5" y2="17"/>
+          </svg>
+        </div>
+        <h3 class="step-title" id="step3-title">גילוי ויזואלי</h3>
+        <p class="step-desc">בחרו תחום ועיינו במפה הסמנטית. מדדים קשורים מוצגים כרשת — לחצו להרחבה.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════ ABOUT ══════════════ -->
+<section class="about-section" id="about-section" aria-labelledby="about-title">
+  <div class="about-inner">
+
+    <!-- Text -->
+    <div class="about-text">
+      <p class="section-eyebrow">על הקטלוג</p>
+      <h2 class="section-title" id="about-title">מאחורי הקטלוג</h2>
+      <p class="about-body">
+        בעולם החברתי קיים מגוון עצום של מדדים — אך הידע לגביהם מפוזר, לא נגיש, ותלוי באנשי מקצוע בודדים. הקטלוג נבנה כדי לשנות זאת: להפוך את בחירת המדדים מ"אמנות שמבוססת על ניסיון" לתהליך נגיש, מדויק ושקוף לכולם.
+      </p>
+      <p class="about-body">
+        הקטלוג מארגן מדדים לפי ממדי תוצאה (תשומות / תפוקות / תוצאות / אימפקט) ותחומי חיים — ומוסיף לכל מדד הקשר מלא: מתי לבחור, כיצד למדוד, ואיזו החלטה הוא עוזר לקבל.
+      </p>
+      <div class="methodology-box">
+        <strong>מתודולוגיה:</strong> פותחה בשיתוף מכון מאיירס-ג'וינט-ברוקדייל ומבוססת על ניסיון של עשרות שנות הערכת תכניות חברתיות בישראל.
+      </div>
+    </div>
+
+    <!-- Orgs -->
+    <div>
+      <div class="org-cards" role="list">
+        <article class="org-card" role="listitem">
+          <div class="org-logo" style="background: var(--primary);" aria-hidden="true">JDC</div>
+          <div>
+            <div class="org-name">JDC DIDA — יחידת הדאטה</div>
+            <div class="org-desc">אגף הדאטה, אינסייטס ודיגיטל של הג'וינט ישראל — בעל ומפתח הקטלוג</div>
+          </div>
+        </article>
+        <article class="org-card" role="listitem">
+          <div class="org-logo" style="background: #1E3A5F;" aria-hidden="true">MJB</div>
+          <div>
+            <div class="org-name">מכון מאיירס-ג'וינט-ברוקדייל</div>
+            <div class="org-desc">שותף מתודולוגי — מחקר הערכה ומדידה חברתית בישראל</div>
+          </div>
+        </article>
+        <article class="org-card" role="listitem">
+          <div class="org-logo" style="background: var(--success);" aria-hidden="true">
+            <svg style="width:20px;height:20px;" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div>
+            <div class="org-name">40+ ארגונים שותפים</div>
+            <div class="org-desc">עמותות ומשרדי ממשלה שתכניותיהם משתמשות בקטלוג</div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer class="footer" role="contentinfo">
+  <p class="footer-logo">קטלוג המדדים החברתיים</p>
+  <p>© 2026 JDC DIDA · <a href="#">תנאי שימוש</a> · <a href="#">צרו קשר</a></p>
+</footer>
+
+
+<script>
+  function fillSearch(text) {
+    const input = document.getElementById('hero-search-input');
+    input.value = text;
+    input.focus();
+  }
+
+  function doSearch() {
+    const val = document.getElementById('hero-search-input').value.trim();
+    if (!val) return;
+    window.location.href = 'search-results.html';
+  }
+
+  function goTo(mode) {
+    if (mode === 'browse') {
+      window.location.href = 'browse.html';
+    } else if (mode === 'discover') {
+      window.location.href = 'browse.html'; // Node Chart — בפיתוח, מנווט לעץ הגילוי
+    }
+  }
+</script>
+
+</body>
+</html>

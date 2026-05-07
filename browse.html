@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>עיין לפי תחום — קטלוג מדדים חברתיים | JDC DIDA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ─── RESET ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ul, ol { list-style: none; }
+    button { cursor: pointer; font-family: inherit; border: none; background: none; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── DESIGN TOKENS ─── */
+    :root {
+      --primary:        #0369A1;
+      --primary-hover:  #0284C7;
+      --primary-light:  #E0F2FE;
+      --primary-border: #BAE6FD;
+
+      --surface:    #FFFFFF;
+      --surface-2:  #F8FAFC;
+      --surface-3:  #F1F5F9;
+      --border:     #E2E8F0;
+      --border-strong: #CBD5E1;
+
+      --text-primary:   #0F172A;
+      --text-secondary: #475569;
+      --text-tertiary:  #94A3B8;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 18px;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.06);
+
+      /* Type badge colors */
+      --outcome-bg:     #D1FAE5; --outcome-text: #065F46; --outcome-border: #A7F3D0;
+      --output-bg:      #DBEAFE; --output-text:  #1E40AF; --output-border:  #BFDBFE;
+      --impact-bg:      #EDE9FE; --impact-text:  #4C1D95; --impact-border:  #DDD6FE;
+      --input-bg:       #FEF3C7; --input-text:   #78350F; --input-border:   #FDE68A;
+    }
+
+    /* ─── BASE ─── */
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: var(--surface-2);
+      color: var(--text-primary);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ─── GLOBAL NAV ─── */
+    .global-nav {
+      background: var(--surface);
+      border-block-end: 1px solid var(--border);
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 200;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin-inline: auto;
+      padding-inline: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 56px;
+    }
+    .nav-logo {
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--primary);
+      white-space: nowrap;
+      letter-spacing: -.01em;
+    }
+    .nav-logo span { color: var(--text-secondary); font-weight: 400; }
+    .nav-sep { width: 1px; height: 20px; background: var(--border); margin-inline: 8px; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 2px; align-items: center; }
+    .nav-link {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all .15s;
+      display: block;
+    }
+    .nav-link:hover { background: var(--surface-3); color: var(--text-primary); }
+    .nav-link.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .nav-search-wrap {
+      margin-inline-start: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 7px 14px;
+      min-width: 280px;
+      transition: border-color .15s;
+    }
+    .nav-search-wrap:focus-within {
+      border-color: var(--primary);
+      background: var(--surface);
+    }
+    .nav-search-icon { color: var(--text-tertiary); font-size: 15px; flex-shrink: 0; }
+    .nav-search-wrap input {
+      border: none;
+      background: none;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text-primary);
+      outline: none;
+      flex: 1;
+      text-align: end;
+    }
+    .nav-search-wrap input::placeholder { color: var(--text-tertiary); }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header {
+      background: var(--surface);
+      border-block-end: 1px solid var(--border);
+      padding-block: 32px 24px;
+    }
+    .page-header-inner {
+      max-width: 900px;
+      margin-inline: auto;
+      padding-inline: 24px;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -.02em;
+      margin-block-end: 6px;
+    }
+    .page-header-sub {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-block-end: 22px;
+    }
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-ghost {
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: all .15s;
+    }
+    .btn-ghost:hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+      background: var(--surface-3);
+    }
+    .stats-chips {
+      margin-inline-start: auto;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .stats-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+    }
+    .stats-chip-num {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+    .stats-chip-label {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      font-weight: 500;
+    }
+    .stats-sep { width: 1px; height: 28px; background: var(--border); }
+
+    /* ─── MAIN CONTENT ─── */
+    .browse-main {
+      max-width: 900px;
+      margin-inline: auto;
+      padding-inline: 24px;
+      padding-block: 32px 64px;
+    }
+
+    /* ─── DIMENSION ITEM ─── */
+    .dimension-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .dim-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .dim-item.open {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-strong);
+    }
+
+    .dim-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      text-align: start;
+      cursor: pointer;
+      transition: background .15s;
+      background: none;
+    }
+    .dim-trigger:hover { background: var(--surface-2); }
+
+    .dim-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+      color: #fff;
+      flex-shrink: 0;
+      letter-spacing: 0;
+    }
+
+    .dim-info { flex: 1; min-width: 0; }
+    .dim-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-block-end: 3px;
+    }
+    .dim-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .dim-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .dim-count {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 100px;
+      background: var(--surface-3);
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    .dim-domains-count {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .dim-chevron {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      transition: transform .25s ease;
+      flex-shrink: 0;
+      margin-inline-start: 4px;
+      user-select: none;
+    }
+    .dim-item.open .dim-chevron { transform: rotate(180deg); }
+
+    /* ─── DIM BODY ─── */
+    .dim-body {
+      display: none;
+      border-block-start: 1px solid var(--border);
+    }
+    .dim-item.open .dim-body { display: block; }
+
+    /* ─── DOMAIN LIST ─── */
+    .domain-list {
+      padding: 12px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .domain-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: border-color .15s;
+    }
+    .domain-item.open { border-color: var(--border-strong); }
+
+    .domain-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      background: var(--surface-2);
+      text-align: start;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .domain-trigger:hover { background: var(--surface-3); }
+
+    .domain-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .domain-name {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .domain-count-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .domain-chevron {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      transition: transform .2s;
+      margin-inline-start: 4px;
+    }
+    .domain-item.open .domain-chevron { transform: rotate(180deg); }
+
+    /* ─── DOMAIN BODY ─── */
+    .domain-body {
+      display: none;
+      background: var(--surface);
+    }
+    .domain-item.open .domain-body { display: block; }
+
+    /* ─── INDICATOR LIST ─── */
+    .ind-list { padding: 0; }
+
+    .ind-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px 11px 12px;
+      border-block-start: 1px solid var(--border);
+      transition: background .12s;
+      cursor: pointer;
+    }
+    .ind-row:hover { background: var(--primary-light); }
+
+    /* Type badges */
+    .badge-type {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .badge-type.outcome {
+      background: var(--outcome-bg);
+      color: var(--outcome-text);
+    }
+    .badge-type.output {
+      background: var(--output-bg);
+      color: var(--output-text);
+    }
+    .badge-type.impact {
+      background: var(--impact-bg);
+      color: var(--impact-text);
+    }
+    .badge-type.input {
+      background: var(--input-bg);
+      color: var(--input-text);
+    }
+
+    .ind-name-link {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-decoration: none;
+      line-height: 1.4;
+    }
+    .ind-row:hover .ind-name-link { color: var(--primary); }
+
+    .ind-meta {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .ind-arrow {
+      font-size: 13px;
+      color: var(--text-tertiary);
+      flex-shrink: 0;
+      transition: color .12s;
+    }
+    .ind-row:hover .ind-arrow { color: var(--primary); }
+
+    /* ─── EMPTY STATE ─── */
+    .empty-state {
+      text-align: center;
+      padding-block: 80px;
+      color: var(--text-tertiary);
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ GLOBAL NAV ═══ -->
+<nav class="global-nav">
+  <div class="nav-inner">
+    <a href="home.html" class="nav-logo">קטלוג מדדים <span>| JDC DIDA</span></a>
+    <div class="nav-sep"></div>
+    <div class="nav-links">
+      <a href="home.html" class="nav-link">בית</a>
+      <a href="search-results.html" class="nav-link">חיפוש</a>
+      <a href="browse.html" class="nav-link active">עיון</a>
+      <a href="node-chart.html" class="nav-link">מפה סמנטית</a>
+      <a href="#" class="nav-link">אודות</a>
+    </div>
+    <div class="nav-search-wrap">
+      <span class="nav-search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="חפש מדד, תחום חיים או סוג תוצאה..."
+        onkeydown="if(event.key==='Enter'){window.location.href='search-results.html'}"
+      >
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ PAGE HEADER ═══ -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1>עיין לפי תחום חיים</h1>
+    <p class="page-header-sub">גלה מדדים לפי ממד חיים ותחום — לחץ על ממד כדי להרחיב את הרשימה</p>
+    <div class="header-controls">
+      <button class="btn-ghost" onclick="expandAll()">פתח הכל</button>
+      <button class="btn-ghost" onclick="collapseAll()">סגור הכל</button>
+      <div class="stats-chips">
+        <div class="stats-chip">
+          <span class="stats-chip-num">31</span>
+          <span class="stats-chip-label">מדדים</span>
+        </div>
+        <div class="stats-sep"></div>
+        <div class="stats-chip">
+          <span class="stats-chip-num">10</span>
+          <span class="stats-chip-label">תחומי חיים</span>
+        </div>
+        <div class="stats-sep"></div>
+        <div class="stats-chip">
+          <span class="stats-chip-num">5</span>
+          <span class="stats-chip-label">ממדים</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<main class="browse-main">
+  <div class="dimension-list" id="dimension-list"></div>
+</main>
+
+<script>
+/* ─── DATA ─── */
+const TREE = [
+  {
+    id: 'dim-economic',
+    name: 'ביטחון כלכלי',
+    desc: 'מדדים המעריכים את מצבם הכלכלי של ילדים, נוער ומשפחותיהם',
+    color: '#7C3AED',
+    initial: 'כ',
+    open: true,
+    domains: [
+      {
+        id: 'dom-welfare',
+        name: 'רווחה כלכלית',
+        color: '#7C3AED',
+        lightColor: '#EDE9FE',
+        open: true,
+        indicators: [
+          { name: 'מדד עוני ילדים ונוער',            type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 0–18' },
+          { name: 'ניידות כלכלית בין-דורית',         type: 'impact',  typeLabel: 'אימפקט', meta: 'חמש-שנתי · 18–25' },
+          { name: 'מדד חוסן משפחתי',                 type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 12–18' },
+          { name: 'הכנסה פנויה ממוצעת למשפחה',       type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · משפחות' },
+          { name: 'שיעור ילדים בעוני עמוק',          type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 0–18' },
+        ]
+      },
+      {
+        id: 'dom-employment',
+        name: 'ביטחון תעסוקתי',
+        color: '#9333EA',
+        lightColor: '#F3E8FF',
+        indicators: [
+          { name: 'שיעור תעסוקת בני נוער',           type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · 16–21' },
+          { name: 'שיעור NEET (לא עובד, לא לומד)',   type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 18–24' },
+          { name: 'גיל כניסה לשוק העבודה',           type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · 18–25' },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'dim-education',
+    name: 'חינוך ופיתוח',
+    desc: 'מדדים המשקפים הישגים לימודיים, כישורי חיים ופיתוח אישי',
+    color: '#0369A1',
+    initial: 'ח',
+    domains: [
+      {
+        id: 'dom-academic',
+        name: 'הישגים לימודיים',
+        color: '#0369A1',
+        lightColor: '#E0F2FE',
+        indicators: [
+          { name: 'שיעור נשירה מהמערכת החינוכית',    type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · 12–18' },
+          { name: 'שיעור זכאות לבגרות',              type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · 18' },
+          { name: 'ציוני בגרות ממוצעים',             type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · 18' },
+          { name: 'פערים בהישגים לימודיים',          type: 'impact',  typeLabel: 'אימפקט', meta: 'שנתי · 12–18' },
+        ]
+      },
+      {
+        id: 'dom-life-skills',
+        name: 'כישורי חיים',
+        color: '#0EA5E9',
+        lightColor: '#F0F9FF',
+        indicators: [
+          { name: 'שליטה בכישורי קריאה וכתיבה',     type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 12–18' },
+          { name: 'מיומנויות דיגיטליות',             type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · 12–21' },
+          { name: 'ביטחון עצמי לימודי',              type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 12–18' },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'dim-wellbeing',
+    name: 'רווחה נפשית וחברתית',
+    desc: 'מדדים הבוחנים בריאות נפשית, קשרים חברתיים ואיכות חיים סובייקטיבית',
+    color: '#059669',
+    initial: 'נ',
+    domains: [
+      {
+        id: 'dom-mental',
+        name: 'רווחה נפשית',
+        color: '#059669',
+        lightColor: '#D1FAE5',
+        indicators: [
+          { name: 'מדד אושר סובייקטיבי — ילדים ונוער', type: 'outcome', typeLabel: 'תוצאה', meta: 'שנתי · 8–18', href: 'indicator-card.html' },
+          { name: 'שיעור דיכאון בקרב בני נוער',       type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 12–21' },
+          { name: 'תחושת שייכות חברתית',              type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 12–18' },
+          { name: 'מדד חוסן נפשי',                   type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 12–21' },
+        ]
+      },
+      {
+        id: 'dom-social',
+        name: 'קשרים חברתיים',
+        color: '#10B981',
+        lightColor: '#ECFDF5',
+        indicators: [
+          { name: 'איכות הקשרים הבין-אישיים',        type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 12–18' },
+          { name: 'מעורבות קהילתית',                 type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · 14–21' },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'dim-health',
+    name: 'בריאות',
+    desc: 'מדדים הבוחנים את מצב הבריאות הגופנית ונגישות מערכות הבריאות',
+    color: '#DC2626',
+    initial: 'ב',
+    domains: [
+      {
+        id: 'dom-physical',
+        name: 'בריאות גופנית',
+        color: '#DC2626',
+        lightColor: '#FEE2E2',
+        indicators: [
+          { name: 'שיעור השמנת יתר בקרב בני נוער',   type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 12–18' },
+          { name: 'פעילות גופנית שבועית',             type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · 12–21' },
+          { name: 'גישה לשירותי בריאות',             type: 'input',   typeLabel: 'תשומה',  meta: 'שנתי · 0–18' },
+        ]
+      },
+      {
+        id: 'dom-mental-services',
+        name: 'שירותי בריאות הנפש',
+        color: '#EF4444',
+        lightColor: '#FFF1F2',
+        indicators: [
+          { name: 'שיעור פנייה לשירותי בריאות הנפש', type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · 12–25' },
+          { name: 'זמינות שירותי בריאות הנפש',       type: 'input',   typeLabel: 'תשומה',  meta: 'שנתי · מוסדי' },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'dim-belonging',
+    name: 'שייכות ומעורבות',
+    desc: 'מדדים הבוחנים שייכות חברתית, זהות ומעורבות אזרחית',
+    color: '#D97706',
+    initial: 'ש',
+    domains: [
+      {
+        id: 'dom-civic',
+        name: 'מעורבות אזרחית',
+        color: '#D97706',
+        lightColor: '#FEF3C7',
+        indicators: [
+          { name: 'השתתפות בבחירות (גיל 18+)',       type: 'outcome', typeLabel: 'תוצאה',  meta: 'אחת לארבע שנים · 18+' },
+          { name: 'מעורבות מתנדבים',                 type: 'output',  typeLabel: 'תפוקה',  meta: 'שנתי · 14–21' },
+          { name: 'תחושת השפעה על הקהילה',           type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 14–21' },
+        ]
+      },
+      {
+        id: 'dom-identity',
+        name: 'זהות ושייכות',
+        color: '#F59E0B',
+        lightColor: '#FFFBEB',
+        indicators: [
+          { name: 'זיהוי עם הקהילה המקומית',         type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 12–21' },
+          { name: 'תחושת הכלה חברתית',               type: 'outcome', typeLabel: 'תוצאה',  meta: 'שנתי · 12–21' },
+        ]
+      },
+    ]
+  },
+];
+
+/* ─── RENDER ─── */
+function renderDomain(domain) {
+  const isOpen = domain.open || false;
+  const indHTML = domain.indicators.map(ind => {
+    const href = ind.href || 'indicator-card.html';
+    return `
+      <li class="ind-row" onclick="window.location.href='${href}'">
+        <span class="badge-type ${ind.type}">${ind.typeLabel}</span>
+        <a href="${href}" class="ind-name-link" onclick="event.stopPropagation()">${ind.name}</a>
+        <span class="ind-meta">${ind.meta}</span>
+        <span class="ind-arrow">←</span>
+      </li>`;
+  }).join('');
+
+  return `
+    <div class="domain-item${isOpen ? ' open' : ''}" id="${domain.id}">
+      <button class="domain-trigger" onclick="toggleDomain('${domain.id}')">
+        <span class="domain-dot" style="background:${domain.color}"></span>
+        <span class="domain-name">${domain.name}</span>
+        <span class="domain-count-pill" style="background:${domain.lightColor};color:${domain.color}">
+          ${domain.indicators.length} מדדים
+        </span>
+        <span class="domain-chevron">▼</span>
+      </button>
+      <div class="domain-body">
+        <ul class="ind-list">${indHTML}</ul>
+      </div>
+    </div>`;
+}
+
+function renderDimension(dim) {
+  const totalInds = dim.domains.reduce((s, d) => s + d.indicators.length, 0);
+  const isOpen = dim.open || false;
+  const domainsHTML = dim.domains.map(renderDomain).join('');
+
+  return `
+    <div class="dim-item${isOpen ? ' open' : ''}" id="${dim.id}">
+      <button class="dim-trigger" onclick="toggleDim('${dim.id}')">
+        <div class="dim-icon" style="background:${dim.color}">${dim.initial}</div>
+        <div class="dim-info">
+          <div class="dim-name">${dim.name}</div>
+          <div class="dim-desc">${dim.desc}</div>
+        </div>
+        <div class="dim-meta">
+          <span class="dim-count">${totalInds} מדדים</span>
+          <span class="dim-domains-count">${dim.domains.length} תחומי חיים</span>
+        </div>
+        <span class="dim-chevron">▼</span>
+      </button>
+      <div class="dim-body">
+        <div class="domain-list">${domainsHTML}</div>
+      </div>
+    </div>`;
+}
+
+function renderTree() {
+  const container = document.getElementById('dimension-list');
+  container.innerHTML = TREE.map(renderDimension).join('');
+}
+
+/* ─── INTERACTIONS ─── */
+function toggleDim(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function toggleDomain(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function expandAll() {
+  document.querySelectorAll('.dim-item').forEach(el => el.classList.add('open'));
+  document.querySelectorAll('.domain-item').forEach(el => el.classList.add('open'));
+}
+
+function collapseAll() {
+  document.querySelectorAll('.dim-item').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.domain-item').forEach(el => el.classList.remove('open'));
+}
+
+/* ─── INIT ─── */
+renderTree();
+</script>
+
+</body>
+</html>

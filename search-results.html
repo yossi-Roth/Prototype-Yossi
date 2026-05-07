@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>תוצאות חיפוש — קטלוג המדדים | JDC DIDA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    ul, ol { list-style: none; }
+    button { cursor: pointer; font-family: inherit; }
+    a { text-decoration: none; }
+
+    :root {
+      --primary:        #0369A1;
+      --primary-hover:  #0284C7;
+      --primary-light:  #E0F2FE;
+      --primary-mid:    #0EA5E9;
+
+      --bg-page:        #F8FAFC;
+      --bg-card:        #FFFFFF;
+
+      --border:         #E2E8F0;
+      --border-strong:  #CBD5E1;
+
+      --text-primary:   #0F172A;
+      --text-secondary: #475569;
+      --text-muted:     #94A3B8;
+      --text-inverse:   #FFFFFF;
+
+      --success:        #059669;
+
+      /* domain colors */
+      --d-welfare:   #7C3AED;
+      --d-edu:       #D97706;
+      --d-employ:    #0369A1;
+      --d-social:    #059669;
+      --d-resilience:#DC2626;
+      --d-early:     #854D0E;
+      --d-health:    #0891B2;
+
+      /* badge type colors */
+      --t-outcome:   #059669;
+      --t-output:    #0369A1;
+      --t-input:     #D97706;
+      --t-impact:    #7C3AED;
+
+      --font: 'Heebo', 'Assistant', sans-serif;
+
+      --radius-sm:   4px;
+      --radius-md:   8px;
+      --radius-lg:   12px;
+      --radius-xl:   16px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md: 0 4px 16px rgba(0,0,0,.08);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,.10);
+    }
+
+    html {
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.65;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── ICON HELPER ─── */
+    .icon { width: 16px; height: 16px; flex-shrink: 0; }
+    .icon-md { width: 20px; height: 20px; }
+
+    /* ─── NAV ─── */
+    .global-nav {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 100;
+      background: var(--bg-card);
+      border-block-end: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .global-nav-inner {
+      max-width: 1280px;
+      margin-inline: auto;
+      padding-inline: 32px;
+      padding-block: 14px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .nav-logo span { font-weight: 300; color: var(--text-muted); }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      margin-inline-start: auto;
+    }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      transition: all .15s;
+    }
+    .nav-links a:hover { background: var(--bg-page); color: var(--text-primary); }
+
+    /* ─── SEARCH HEADER ─── */
+    .search-header {
+      background: var(--bg-card);
+      border-block-end: 1px solid var(--border);
+      padding-block: 20px;
+      padding-inline: 32px;
+    }
+    .search-header-inner {
+      max-width: 1280px;
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: transparent;
+      white-space: nowrap;
+      transition: all .15s;
+    }
+    .back-btn:hover { background: var(--bg-page); color: var(--text-primary); border-color: var(--border-strong); }
+    .back-btn svg { transform: scaleX(-1); } /* RTL arrow flip */
+
+    .search-field-wrap {
+      position: relative;
+      flex: 1;
+      max-width: 640px;
+    }
+    .search-field {
+      width: 100%;
+      padding-block: 10px;
+      padding-inline-start: 42px;
+      padding-inline-end: 100px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-full);
+      font-family: var(--font);
+      font-size: 15px;
+      background: var(--bg-page);
+      outline: none;
+      color: var(--text-primary);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .search-field:focus {
+      background: var(--bg-card);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(3,105,161,.1);
+    }
+    .search-field-icon {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-start: 14px;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .search-field-btn {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-end: 6px;
+      transform: translateY(-50%);
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-full);
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: background .15s;
+    }
+    .search-field-btn:hover { background: var(--primary-hover); }
+
+    .search-count {
+      font-size: 14px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      margin-inline-start: 8px;
+    }
+    .search-count strong { color: var(--text-primary); font-weight: 700; }
+
+    /* Active filters bar */
+    .active-filters-bar {
+      background: var(--primary-light);
+      border-block-end: 1px solid #BAE6FD;
+      padding-block: 10px;
+      padding-inline: 32px;
+      display: none; /* shown via JS when filters active */
+    }
+    .active-filters-bar.visible { display: block; }
+    .active-filters-inner {
+      max-width: 1280px;
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .active-filters-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+    }
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--primary);
+      background: #fff;
+      border: 1px solid #BAE6FD;
+      border-radius: var(--radius-full);
+      padding: 3px 10px;
+    }
+    .filter-pill-remove {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 14px;
+      line-height: 1;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+    }
+    .filter-pill-remove:hover { color: var(--primary); }
+    .clear-all-btn {
+      margin-inline-start: auto;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--primary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* ─── MAIN LAYOUT ─── */
+    .search-layout {
+      max-width: 1280px;
+      margin-inline: auto;
+      padding-inline: 32px;
+      padding-block: 28px;
+      display: grid;
+      grid-template-columns: 1fr 264px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* ─── RESULTS COLUMN ─── */
+    .results-col {}
+
+    .results-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-block-end: 16px;
+    }
+    .sort-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .sort-select {
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 5px 10px;
+      background: var(--bg-card);
+      outline: none;
+      cursor: pointer;
+    }
+    .sort-select:focus { border-color: var(--primary); }
+
+    .view-toggle {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-inline-start: auto;
+    }
+    .view-toggle-btn {
+      background: transparent;
+      border: none;
+      padding: 6px 10px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      transition: all .15s;
+    }
+    .view-toggle-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .view-toggle-btn:hover:not(.active) { background: var(--bg-page); }
+
+    /* ─── RESULT CARD ─── */
+    .result-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .result-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 20px 24px;
+      transition: border-color .2s, box-shadow .2s;
+      position: relative;
+    }
+    .result-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+    .result-card.in-comparison {
+      border-color: var(--primary);
+      background: #F0F9FF;
+    }
+
+    .result-card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-block-end: 10px;
+    }
+    .result-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex: 1;
+    }
+
+    /* badge base */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+    .badge-type-outcome  { background: #DCFCE7; color: var(--t-outcome); }
+    .badge-type-output   { background: var(--primary-light); color: var(--t-output); }
+    .badge-type-input    { background: #FEF3C7; color: var(--t-input); }
+    .badge-type-impact   { background: #F3E8FF; color: var(--t-impact); }
+    .badge-domain {
+      background: color-mix(in srgb, var(--domain-color, #7C3AED) 12%, white);
+      color: var(--domain-color, #7C3AED);
+      border: 1px solid color-mix(in srgb, var(--domain-color, #7C3AED) 25%, white);
+    }
+
+    .compare-btn {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--primary-light);
+      border: 1px solid #BAE6FD;
+      border-radius: var(--radius-full);
+      padding: 5px 12px;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .compare-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .compare-btn.added { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .compare-btn.added:hover { background: #0284C7; }
+
+    .result-title-link {
+      display: block;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-block-end: 6px;
+      transition: color .15s;
+      line-height: 1.35;
+    }
+    .result-title-link:hover { color: var(--primary); }
+
+    .result-snippet {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-block-end: 10px;
+    }
+
+    /* Rationale snippet — the "Michal moment" */
+    .result-rationale {
+      border-inline-start: 3px solid var(--primary);
+      padding-inline-start: 10px;
+      padding-block: 6px;
+      background: #F0F9FF;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      margin-block-end: 12px;
+    }
+    .result-rationale-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--primary);
+      margin-block-end: 2px;
+    }
+    .result-rationale-text {
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .result-meta {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .result-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .result-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-block-start: 14px;
+      padding-block-start: 12px;
+      border-block-start: 1px solid var(--border);
+    }
+    .open-card-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: gap .15s;
+    }
+    .open-card-link svg { transform: scaleX(-1); } /* RTL arrow */
+    .open-card-link:hover { gap: 8px; }
+
+    .programs-used {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ─── FILTER SIDEBAR ─── */
+    .filter-col {
+      position: sticky;
+      inset-block-start: calc(57px + 20px); /* nav + gap */
+    }
+    .filter-panel {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+    .filter-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-block-end: 1px solid var(--border);
+    }
+    .filter-panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .filter-reset-btn {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color .15s;
+    }
+    .filter-reset-btn:hover { color: var(--primary); }
+
+    .filter-group {
+      padding: 14px 18px;
+      border-block-end: 1px solid var(--border);
+    }
+    .filter-group:last-child { border-block-end: none; }
+    .filter-group-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text-muted);
+      margin-block-end: 10px;
+    }
+
+    /* Checkbox filter items */
+    .filter-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .filter-item input[type="checkbox"] {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--border-strong);
+      border-radius: 4px;
+      flex-shrink: 0;
+      cursor: pointer;
+      position: relative;
+      transition: all .15s;
+    }
+    .filter-item input[type="checkbox"]:checked {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    .filter-item input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      inset-block-start: 2px;
+      inset-inline-start: 4px;
+      width: 5px;
+      height: 9px;
+      border: 2px solid #fff;
+      border-block-start: none;
+      border-inline-start: none;
+      transform: rotate(45deg);
+    }
+    .filter-item-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+    .filter-item-count {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 1px 7px;
+    }
+
+    /* Domain chips */
+    .domain-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .domain-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .domain-chip .chip-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .domain-chip:not(.active) {
+      background: var(--bg-page);
+      border-color: var(--border);
+      color: var(--text-secondary);
+    }
+    .domain-chip:not(.active):hover {
+      border-color: var(--border-strong);
+      color: var(--text-primary);
+    }
+    .domain-chip.active {
+      background: color-mix(in srgb, var(--chip-color) 12%, white);
+      border-color: color-mix(in srgb, var(--chip-color) 35%, white);
+      color: var(--chip-color);
+      font-weight: 600;
+    }
+
+    /* ─── EMPTY STATE ─── */
+    .empty-state {
+      text-align: center;
+      padding-block: 64px;
+      display: none;
+    }
+    .empty-state.visible { display: block; }
+    .empty-icon {
+      width: 48px;
+      height: 48px;
+      color: var(--text-muted);
+      margin-inline: auto;
+      margin-block-end: 16px;
+    }
+    .empty-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-block-end: 8px;
+    }
+    .empty-text {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* ─── COMPARISON TRAY ─── */
+    .comparison-tray {
+      position: fixed;
+      inset-block-end: 0;
+      inset-inline-start: 0;
+      inset-inline-end: 0;
+      z-index: 300;
+      background: #0F172A;
+      border-block-start: 3px solid var(--primary);
+      box-shadow: 0 -4px 24px rgba(0,0,0,.25);
+      transform: translateY(100%);
+      transition: transform .3s cubic-bezier(.4,0,.2,1);
+    }
+    .comparison-tray.visible { transform: translateY(0); }
+    .comparison-tray-inner {
+      max-width: 1280px;
+      margin-inline: auto;
+      padding-inline: 32px;
+      padding-block: 14px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .tray-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,.7);
+      white-space: nowrap;
+    }
+    .tray-items {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+    }
+    .tray-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: var(--radius-md);
+      padding: 6px 10px;
+      min-width: 180px;
+    }
+    .tray-item-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tray-item-remove {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,.5);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+    }
+    .tray-item-remove:hover { color: #fff; }
+    .tray-slot-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,.04);
+      border: 1px dashed rgba(255,255,255,.2);
+      border-radius: var(--radius-md);
+      padding: 6px 24px;
+      min-width: 160px;
+      font-size: 12px;
+      color: rgba(255,255,255,.35);
+    }
+    .tray-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tray-compare-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .tray-compare-btn:hover { background: var(--primary-hover); }
+    .tray-compare-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .tray-clear-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.6);
+      border-radius: var(--radius-md);
+      padding: 8px 14px;
+      font-size: 13px;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .tray-clear-btn:hover { border-color: rgba(255,255,255,.5); color: #fff; }
+  </style>
+</head>
+
+<body>
+
+<!-- ══════════════ GLOBAL NAV ══════════════ -->
+<header class="global-nav" role="banner">
+  <nav class="global-nav-inner" aria-label="ניווט ראשי">
+    <a href="home.html" class="nav-logo">קטלוג מדדים <span>| JDC DIDA</span></a>
+    <ul class="nav-links" role="list">
+      <li><a href="browse.html">עיון</a></li>
+      <li><a href="node-chart.html">מפה סמנטית</a></li>
+      <li><a href="#">אודות</a></li>
+    </ul>
+  </nav>
+</header>
+
+
+<!-- ══════════════ SEARCH HEADER ══════════════ -->
+<div class="search-header">
+  <div class="search-header-inner">
+
+    <a href="home.html" class="back-btn" aria-label="חזרה לדף הבית">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      חזרה
+    </a>
+
+    <div class="search-field-wrap" role="search">
+      <span class="search-field-icon" aria-hidden="true">
+        <svg class="icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </span>
+      <input
+        id="search-input"
+        class="search-field"
+        type="search"
+        value="צמצום עוני בפריפריה אצל בני נוער"
+        aria-label="שאילתת חיפוש"
+        onkeydown="if(event.key==='Enter') doSearch()"
+      >
+      <button class="search-field-btn" onclick="doSearch()">חיפוש</button>
+    </div>
+
+    <p class="search-count" aria-live="polite">
+      נמצאו <strong id="result-count">6</strong> מדדים
+    </p>
+
+  </div>
+</div>
+
+
+<!-- Active filters bar (hidden by default) -->
+<div class="active-filters-bar" id="active-filters-bar" role="status" aria-label="פילטרים פעילים">
+  <div class="active-filters-inner">
+    <span class="active-filters-label">פילטרים פעילים:</span>
+    <div id="active-filter-pills"></div>
+    <button class="clear-all-btn" onclick="clearAllFilters()">נקה הכל</button>
+  </div>
+</div>
+
+
+<!-- ══════════════ MAIN LAYOUT ══════════════ -->
+<main class="search-layout" id="main-content">
+
+  <!-- ── RESULTS ── -->
+  <section class="results-col" aria-labelledby="results-heading">
+
+    <!-- Toolbar -->
+    <div class="results-toolbar" role="toolbar" aria-label="כלי מיון ותצוגה">
+      <span class="sort-label">מיין לפי:</span>
+      <select class="sort-select" aria-label="אפשרות מיון" onchange="sortResults(this.value)">
+        <option value="relevance">רלוונטיות</option>
+        <option value="name">שם מדד</option>
+        <option value="domain">תחום חיים</option>
+        <option value="type">סוג מדד</option>
+      </select>
+
+      <div class="view-toggle" role="group" aria-label="אופן תצוגה">
+        <button class="view-toggle-btn active" aria-label="תצוגת רשימה" title="רשימה">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+            <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </button>
+        <button class="view-toggle-btn" aria-label="תצוגת כרטיסיות" title="כרטיסיות">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Result cards -->
+    <div class="result-list" id="result-list" role="list" aria-label="תוצאות חיפוש">
+
+      <!-- ── Card 1 ── -->
+      <article class="result-card" id="card-1" role="listitem" data-type="outcome" data-domain="welfare" data-stage="evaluation">
+        <div class="result-card-top">
+          <div class="result-badges">
+            <span class="badge badge-type-outcome">תוצאה</span>
+            <span class="badge badge-domain" style="--domain-color: var(--d-welfare)">רווחה כלכלית</span>
+          </div>
+          <button
+            class="compare-btn"
+            id="compare-btn-1"
+            onclick="addToComparison('card-1', 'מדד עוני ילדים ונוער', this)"
+            aria-label="הוסף מדד עוני ילדים ונוער להשוואה"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span class="compare-btn-text">הוסף להשוואה</span>
+          </button>
+        </div>
+
+        <a href="indicator-card.html" class="result-title-link">מדד עוני ילדים ונוער</a>
+        <p class="result-snippet">מודד את שיעור בני הנוער (12–18) החיים בעוני לפי קו העוני הלאומי, בהשוואה לאוכלוסייה הכללית ולפי פיזור גיאוגרפי.</p>
+
+        <div class="result-rationale" role="note">
+          <p class="result-rationale-label">מתאים כאשר</p>
+          <p class="result-rationale-text">מעריכים השפעה ישירה של תכנית על המצב הכלכלי של משפחות בני נוער, במיוחד בפריפריה ובאשכולות 1–4.</p>
+        </div>
+
+        <div class="result-meta" aria-label="מידע נוסף">
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            שנתי
+          </span>
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            נתוני מינהל
+          </span>
+        </div>
+
+        <div class="result-card-footer">
+          <a href="indicator-card.html" class="open-card-link" aria-label="פתח כרטיס מדד עוני ילדים ונוער">
+            פתח כרטיס מדד
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </a>
+          <span class="programs-used" aria-label="שימוש בתכניות">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            8 תכניות JDC
+          </span>
+        </div>
+      </article>
+
+
+      <!-- ── Card 2 ── -->
+      <article class="result-card" id="card-2" role="listitem" data-type="output" data-domain="edu" data-stage="implementation">
+        <div class="result-card-top">
+          <div class="result-badges">
+            <span class="badge badge-type-output">תפוקה</span>
+            <span class="badge badge-domain" style="--domain-color: var(--d-edu)">חינוך</span>
+          </div>
+          <button
+            class="compare-btn"
+            id="compare-btn-2"
+            onclick="addToComparison('card-2', 'שיעור נשירה מהמערכת החינוכית', this)"
+            aria-label="הוסף שיעור נשירה להשוואה"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span class="compare-btn-text">הוסף להשוואה</span>
+          </button>
+        </div>
+
+        <a href="indicator-card.html" class="result-title-link">שיעור נשירה מהמערכת החינוכית</a>
+        <p class="result-snippet">אחוז בני נוער (12–18) שנשרו ממסגרת חינוכית מוכרת במהלך שנת לימודים, מחושב לפי מסד נתוני משרד החינוך.</p>
+
+        <div class="result-rationale" role="note">
+          <p class="result-rationale-label">מתאים כאשר</p>
+          <p class="result-rationale-text">מתמקדים בשמירה על מסגרת ומניעת נשירה כגורם מגן מפני עוני — מדד תפוקה לשלב יישום התכנית.</p>
+        </div>
+
+        <div class="result-meta">
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            שנתי
+          </span>
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            נתוני מינהל
+          </span>
+        </div>
+
+        <div class="result-card-footer">
+          <a href="indicator-card.html" class="open-card-link">
+            פתח כרטיס מדד
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <span class="programs-used">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            12 תכניות JDC
+          </span>
+        </div>
+      </article>
+
+
+      <!-- ── Card 3 ── -->
+      <article class="result-card" id="card-3" role="listitem" data-type="outcome" data-domain="social" data-stage="evaluation">
+        <div class="result-card-top">
+          <div class="result-badges">
+            <span class="badge badge-type-outcome">תוצאה</span>
+            <span class="badge badge-domain" style="--domain-color: var(--d-social)">רווחה חברתית</span>
+          </div>
+          <button
+            class="compare-btn"
+            id="compare-btn-3"
+            onclick="addToComparison('card-3', 'תחושת שייכות חברתית', this)"
+            aria-label="הוסף תחושת שייכות להשוואה"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span class="compare-btn-text">הוסף להשוואה</span>
+          </button>
+        </div>
+
+        <a href="indicator-card.html" class="result-title-link">תחושת שייכות חברתית</a>
+        <p class="result-snippet">מדד מורכב של תחושת חיבור לקהילה, למוסדות, ולמעגלים חברתיים — נמדד בשאלון עצמי-דיווח, סקאלה מאומתת (Social Connectedness Scale).</p>
+
+        <div class="result-rationale" role="note">
+          <p class="result-rationale-label">מתאים כאשר</p>
+          <p class="result-rationale-text">מודדים רווחה סובייקטיבית של בני נוער בקבוצות מוחלשות — בפרט כשהתכנית שמה דגש על חיזוק קשרים חברתיים.</p>
+        </div>
+
+        <div class="result-meta">
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            חצי-שנתי
+          </span>
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            שאלון
+          </span>
+        </div>
+
+        <div class="result-card-footer">
+          <a href="indicator-card.html" class="open-card-link">
+            פתח כרטיס מדד
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <span class="programs-used">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            5 תכניות JDC
+          </span>
+        </div>
+      </article>
+
+
+      <!-- ── Card 4 ── -->
+      <article class="result-card" id="card-4" role="listitem" data-type="outcome" data-domain="resilience" data-stage="evaluation">
+        <div class="result-card-top">
+          <div class="result-badges">
+            <span class="badge badge-type-outcome">תוצאה</span>
+            <span class="badge badge-domain" style="--domain-color: var(--d-resilience)">חוסן קהילתי</span>
+          </div>
+          <button
+            class="compare-btn"
+            id="compare-btn-4"
+            onclick="addToComparison('card-4', 'מדד חוסן משפחתי', this)"
+            aria-label="הוסף מדד חוסן משפחתי להשוואה"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span class="compare-btn-text">הוסף להשוואה</span>
+          </button>
+        </div>
+
+        <a href="indicator-card.html" class="result-title-link">מדד חוסן משפחתי</a>
+        <p class="result-snippet">מדד מורכב של יכולת המשפחה לגייס משאבים, לשמור על תפקוד, ולהתמודד עם לחצים כלכליים וסביבתיים לאורך זמן.</p>
+
+        <div class="result-rationale" role="note">
+          <p class="result-rationale-label">מתאים כאשר</p>
+          <p class="result-rationale-text">מעריכים השפעת תכנית על יציבות המשפחה לאורך זמן — ולא רק על מצב כלכלי נקודתי.</p>
+        </div>
+
+        <div class="result-meta">
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            שנתי
+          </span>
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            שאלון
+          </span>
+        </div>
+
+        <div class="result-card-footer">
+          <a href="indicator-card.html" class="open-card-link">
+            פתח כרטיס מדד
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <span class="programs-used">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            4 תכניות JDC
+          </span>
+        </div>
+      </article>
+
+
+      <!-- ── Card 5 ── -->
+      <article class="result-card" id="card-5" role="listitem" data-type="output" data-domain="employ" data-stage="implementation">
+        <div class="result-card-top">
+          <div class="result-badges">
+            <span class="badge badge-type-output">תפוקה</span>
+            <span class="badge badge-domain" style="--domain-color: var(--d-employ)">תעסוקה</span>
+          </div>
+          <button
+            class="compare-btn"
+            id="compare-btn-5"
+            onclick="addToComparison('card-5', 'שיעור תעסוקת בני נוער', this)"
+            aria-label="הוסף שיעור תעסוקת בני נוער להשוואה"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span class="compare-btn-text">הוסף להשוואה</span>
+          </button>
+        </div>
+
+        <a href="indicator-card.html" class="result-title-link">שיעור תעסוקת בני נוער</a>
+        <p class="result-snippet">אחוז בני הנוער (16–22) המועסקים בתעסוקה חלקית או מלאה, מתוך משתתפי התכנית — לפי נתוני ביטוח לאומי ודיווח עצמי.</p>
+
+        <div class="result-rationale" role="note">
+          <p class="result-rationale-label">מתאים כאשר</p>
+          <p class="result-rationale-text">מתמקדים בהכנה לשוק העבודה ופיתוח כישורים — מדד תפוקה מרכזי לתכניות קידום תעסוקה בגילאי 16+.</p>
+        </div>
+
+        <div class="result-meta">
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            רבעוני
+          </span>
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            נתוני מינהל
+          </span>
+        </div>
+
+        <div class="result-card-footer">
+          <a href="indicator-card.html" class="open-card-link">
+            פתח כרטיס מדד
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <span class="programs-used">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            7 תכניות JDC
+          </span>
+        </div>
+      </article>
+
+
+      <!-- ── Card 6 ── -->
+      <article class="result-card" id="card-6" role="listitem" data-type="impact" data-domain="welfare" data-stage="evaluation">
+        <div class="result-card-top">
+          <div class="result-badges">
+            <span class="badge badge-type-impact">אימפקט</span>
+            <span class="badge badge-domain" style="--domain-color: var(--d-welfare)">רווחה כלכלית</span>
+          </div>
+          <button
+            class="compare-btn"
+            id="compare-btn-6"
+            onclick="addToComparison('card-6', 'ניידות כלכלית בין-דורית', this)"
+            aria-label="הוסף ניידות כלכלית בין-דורית להשוואה"
+          >
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span class="compare-btn-text">הוסף להשוואה</span>
+          </button>
+        </div>
+
+        <a href="indicator-card.html" class="result-title-link">ניידות כלכלית בין-דורית</a>
+        <p class="result-snippet">מידת השינוי במצב הכלכלי של ילדים לעומת הוריהם — מדד אימפקט ארוך-טווח, מחושב ממעקב אחר קבוצות גיל לאורך שנים.</p>
+
+        <div class="result-rationale" role="note">
+          <p class="result-rationale-label">מתאים כאשר</p>
+          <p class="result-rationale-text">מעריכים השפעה מערכתית ארוכת-טווח על פערים מבניים — פחות מתאים לתכניות קצרות-מועד (פחות מ-5 שנים).</p>
+        </div>
+
+        <div class="result-meta">
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            רב-שנתי
+          </span>
+          <span class="result-meta-item">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            נתוני מינהל
+          </span>
+        </div>
+
+        <div class="result-card-footer">
+          <a href="indicator-card.html" class="open-card-link">
+            פתח כרטיס מדד
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <span class="programs-used">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            3 תכניות JDC
+          </span>
+        </div>
+      </article>
+
+    </div><!-- /result-list -->
+
+    <!-- Empty state (shown when filters exclude all results) -->
+    <div class="empty-state" id="empty-state" role="status">
+      <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <p class="empty-title">לא נמצאו מדדים</p>
+      <p class="empty-text">נסו לשנות את הפילטרים או לנקות את הסינון</p>
+    </div>
+
+  </section><!-- /results-col -->
+
+
+  <!-- ── FILTER SIDEBAR ── -->
+  <aside class="filter-col" aria-label="פאנל סינון">
+    <div class="filter-panel">
+
+      <div class="filter-panel-header">
+        <h2 class="filter-panel-title">סינון תוצאות</h2>
+        <button class="filter-reset-btn" onclick="clearAllFilters()">נקה הכל</button>
+      </div>
+
+      <!-- סוג מדד -->
+      <div class="filter-group">
+        <p class="filter-group-title">סוג מדד</p>
+        <div class="filter-items" role="group" aria-label="סינון לפי סוג מדד">
+          <label class="filter-item">
+            <input type="checkbox" value="outcome" onchange="applyFilter('type','outcome',this)">
+            <span class="filter-item-label">תוצאה</span>
+            <span class="filter-item-count">3</span>
+          </label>
+          <label class="filter-item">
+            <input type="checkbox" value="output" onchange="applyFilter('type','output',this)">
+            <span class="filter-item-label">תפוקה</span>
+            <span class="filter-item-count">2</span>
+          </label>
+          <label class="filter-item">
+            <input type="checkbox" value="impact" onchange="applyFilter('type','impact',this)">
+            <span class="filter-item-label">אימפקט</span>
+            <span class="filter-item-count">1</span>
+          </label>
+          <label class="filter-item">
+            <input type="checkbox" value="input" onchange="applyFilter('type','input',this)">
+            <span class="filter-item-label">תשומה</span>
+            <span class="filter-item-count">0</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- שלב בתכנית -->
+      <div class="filter-group">
+        <p class="filter-group-title">שלב בתכנית</p>
+        <div class="filter-items" role="group" aria-label="סינון לפי שלב">
+          <label class="filter-item">
+            <input type="checkbox" value="evaluation" onchange="applyFilter('stage','evaluation',this)">
+            <span class="filter-item-label">הערכה</span>
+            <span class="filter-item-count">4</span>
+          </label>
+          <label class="filter-item">
+            <input type="checkbox" value="implementation" onchange="applyFilter('stage','implementation',this)">
+            <span class="filter-item-label">יישום</span>
+            <span class="filter-item-count">2</span>
+          </label>
+          <label class="filter-item">
+            <input type="checkbox" value="planning" onchange="applyFilter('stage','planning',this)">
+            <span class="filter-item-label">תכנון</span>
+            <span class="filter-item-count">0</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- תחום חיים -->
+      <div class="filter-group">
+        <p class="filter-group-title">תחום חיים</p>
+        <div class="domain-chips" role="group" aria-label="סינון לפי תחום">
+          <button class="domain-chip" style="--chip-color: var(--d-welfare)" onclick="toggleDomainChip(this,'welfare')" aria-pressed="false">
+            <span class="chip-dot" style="background: var(--d-welfare)"></span>
+            רווחה כלכלית
+          </button>
+          <button class="domain-chip" style="--chip-color: var(--d-edu)" onclick="toggleDomainChip(this,'edu')" aria-pressed="false">
+            <span class="chip-dot" style="background: var(--d-edu)"></span>
+            חינוך
+          </button>
+          <button class="domain-chip" style="--chip-color: var(--d-social)" onclick="toggleDomainChip(this,'social')" aria-pressed="false">
+            <span class="chip-dot" style="background: var(--d-social)"></span>
+            רווחה חברתית
+          </button>
+          <button class="domain-chip" style="--chip-color: var(--d-resilience)" onclick="toggleDomainChip(this,'resilience')" aria-pressed="false">
+            <span class="chip-dot" style="background: var(--d-resilience)"></span>
+            חוסן קהילתי
+          </button>
+          <button class="domain-chip" style="--chip-color: var(--d-employ)" onclick="toggleDomainChip(this,'employ')" aria-pressed="false">
+            <span class="chip-dot" style="background: var(--d-employ)"></span>
+            תעסוקה
+          </button>
+        </div>
+      </div>
+
+      <!-- כלי מדידה -->
+      <div class="filter-group">
+        <p class="filter-group-title">כלי מדידה</p>
+        <div class="filter-items" role="group" aria-label="סינון לפי כלי מדידה">
+          <label class="filter-item">
+            <input type="checkbox" value="admin" onchange="applyFilter('tool','admin',this)">
+            <span class="filter-item-label">נתוני מינהל</span>
+            <span class="filter-item-count">4</span>
+          </label>
+          <label class="filter-item">
+            <input type="checkbox" value="survey" onchange="applyFilter('tool','survey',this)">
+            <span class="filter-item-label">שאלון</span>
+            <span class="filter-item-count">2</span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
+</main>
+
+
+<!-- ══════════════ COMPARISON TRAY ══════════════ -->
+<div class="comparison-tray" id="comparison-tray" role="region" aria-label="מגש השוואה" aria-live="polite">
+  <div class="comparison-tray-inner">
+    <span class="tray-label">השוואה:</span>
+    <div class="tray-items" id="tray-items" aria-label="מדדים שנבחרו להשוואה"></div>
+    <div class="tray-actions">
+      <button class="tray-compare-btn" id="tray-compare-btn" onclick="openComparison()" disabled>
+        השווה
+      </button>
+      <button class="tray-clear-btn" onclick="clearComparison()">נקה</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // ─── Comparison tray ─────────────────────────────────────────────────
+  const MAX_COMPARE = 3;
+  let comparisonItems = JSON.parse(sessionStorage.getItem('comparison') || '[]');
+
+  function renderTray() {
+    const tray     = document.getElementById('comparison-tray');
+    const itemsEl  = document.getElementById('tray-items');
+    const compareBtn = document.getElementById('tray-compare-btn');
+
+    itemsEl.innerHTML = '';
+
+    // Render filled slots
+    comparisonItems.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'tray-item';
+      el.innerHTML = `
+        <span class="tray-item-name">${item.name}</span>
+        <button class="tray-item-remove" onclick="removeItem('${item.id}')" aria-label="הסר ${item.name} מההשוואה">×</button>
+      `;
+      itemsEl.appendChild(el);
+    });
+
+    // Render empty slots
+    const emptyCount = Math.max(0, MAX_COMPARE - comparisonItems.length);
+    for (let i = 0; i < emptyCount; i++) {
+      const el = document.createElement('div');
+      el.className = 'tray-slot-empty';
+      el.textContent = 'הוסף מדד';
+      itemsEl.appendChild(el);
+    }
+
+    tray.classList.toggle('visible', comparisonItems.length > 0);
+    compareBtn.disabled = comparisonItems.length < 2;
+  }
+
+  function addToComparison(id, name, btn) {
+    if (comparisonItems.find(i => i.id === id)) {
+      removeItem(id);
+      return;
+    }
+    if (comparisonItems.length >= MAX_COMPARE) {
+      alert(`ניתן להשוות עד ${MAX_COMPARE} מדדים בו-זמנית. הסר מדד כדי להוסיף חדש.`);
+      return;
+    }
+    comparisonItems.push({ id, name });
+    sessionStorage.setItem('comparison', JSON.stringify(comparisonItems));
+
+    // Update button state
+    btn.classList.add('added');
+    btn.querySelector('.compare-btn-text').textContent = 'נוסף להשוואה ✓';
+    document.getElementById(id)?.classList.add('in-comparison');
+
+    renderTray();
+  }
+
+  function removeItem(id) {
+    comparisonItems = comparisonItems.filter(i => i.id !== id);
+    sessionStorage.setItem('comparison', JSON.stringify(comparisonItems));
+
+    // Reset button
+    const btn = document.getElementById(`compare-btn-${id.replace('card-', '')}`);
+    if (btn) {
+      btn.classList.remove('added');
+      btn.querySelector('.compare-btn-text').textContent = 'הוסף להשוואה';
+    }
+    document.getElementById(id)?.classList.remove('in-comparison');
+
+    renderTray();
+  }
+
+  function clearComparison() {
+    comparisonItems.forEach(item => {
+      const num = item.id.replace('card-', '');
+      const btn = document.getElementById(`compare-btn-${num}`);
+      if (btn) {
+        btn.classList.remove('added');
+        btn.querySelector('.compare-btn-text').textContent = 'הוסף להשוואה';
+      }
+      document.getElementById(item.id)?.classList.remove('in-comparison');
+    });
+    comparisonItems = [];
+    sessionStorage.removeItem('comparison');
+    renderTray();
+  }
+
+  function openComparison() {
+    window.location.href = 'comparison.html';
+  }
+
+  // ─── Active filters state ─────────────────────────────────────────────
+  const activeFilters = { type: new Set(), stage: new Set(), domain: new Set(), tool: new Set() };
+
+  function applyFilter(dimension, value, checkbox) {
+    if (checkbox.checked) {
+      activeFilters[dimension].add(value);
+    } else {
+      activeFilters[dimension].delete(value);
+    }
+    updateResults();
+    updateActiveFilterBar();
+  }
+
+  function toggleDomainChip(btn, domain) {
+    const isActive = btn.classList.toggle('active');
+    btn.setAttribute('aria-pressed', isActive);
+    if (isActive) {
+      activeFilters.domain.add(domain);
+    } else {
+      activeFilters.domain.delete(domain);
+    }
+    updateResults();
+    updateActiveFilterBar();
+  }
+
+  function updateResults() {
+    const cards = document.querySelectorAll('.result-card');
+    let visible = 0;
+
+    cards.forEach(card => {
+      const type   = card.dataset.type;
+      const domain = card.dataset.domain;
+      const stage  = card.dataset.stage;
+
+      const typeOk   = activeFilters.type.size   === 0 || activeFilters.type.has(type);
+      const domainOk = activeFilters.domain.size === 0 || activeFilters.domain.has(domain);
+      const stageOk  = activeFilters.stage.size  === 0 || activeFilters.stage.has(stage);
+
+      const show = typeOk && domainOk && stageOk;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    document.getElementById('result-count').textContent = visible;
+    document.getElementById('empty-state').classList.toggle('visible', visible === 0);
+  }
+
+  function updateActiveFilterBar() {
+    const bar = document.getElementById('active-filters-bar');
+    const pillsEl = document.getElementById('active-filter-pills');
+    const allFilters = [
+      ...([...activeFilters.type].map(v => ({ dim: 'type', val: v, label: typeLabel(v) }))),
+      ...([...activeFilters.stage].map(v => ({ dim: 'stage', val: v, label: stageLabel(v) }))),
+      ...([...activeFilters.domain].map(v => ({ dim: 'domain', val: v, label: v }))),
+    ];
+
+    pillsEl.innerHTML = allFilters.map(f => `
+      <span class="filter-pill">
+        ${f.label}
+        <button class="filter-pill-remove" onclick="removePillFilter('${f.dim}','${f.val}')" aria-label="הסר פילטר ${f.label}">×</button>
+      </span>
+    `).join('');
+
+    bar.classList.toggle('visible', allFilters.length > 0);
+  }
+
+  function removePillFilter(dim, val) {
+    activeFilters[dim].delete(val);
+    // Uncheck the checkbox
+    const cb = document.querySelector(`input[value="${val}"]`);
+    if (cb) cb.checked = false;
+    // Deactivate domain chip
+    const chip = document.querySelector(`.domain-chip[onclick*="'${val}'"]`);
+    if (chip) { chip.classList.remove('active'); chip.setAttribute('aria-pressed', 'false'); }
+    updateResults();
+    updateActiveFilterBar();
+  }
+
+  function clearAllFilters() {
+    Object.keys(activeFilters).forEach(k => activeFilters[k].clear());
+    document.querySelectorAll('.filter-item input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.domain-chip').forEach(chip => {
+      chip.classList.remove('active');
+      chip.setAttribute('aria-pressed', 'false');
+    });
+    updateResults();
+    updateActiveFilterBar();
+  }
+
+  function typeLabel(v)  { return { outcome:'תוצאה', output:'תפוקה', impact:'אימפקט', input:'תשומה' }[v] || v; }
+  function stageLabel(v) { return { evaluation:'הערכה', implementation:'יישום', planning:'תכנון' }[v] || v; }
+
+  // ─── Search ─────────────────────────────────────────────────────────
+  function doSearch() {
+    const val = document.getElementById('search-input').value.trim();
+    if (!val) return;
+    // In prototype: just update the count label to simulate a new search
+    alert(`חיפוש חדש: "${val}"\n\nבפרוטוטייפ הסופי — טוען תוצאות חדשות.`);
+  }
+
+  // ─── Sort ───────────────────────────────────────────────────────────
+  function sortResults(val) {
+    // Visual prototype — just announce
+    console.log('Sort by:', val);
+  }
+
+  // ─── Init ───────────────────────────────────────────────────────────
+  renderTray();
+
+  // Restore comparison state on page load
+  comparisonItems.forEach(item => {
+    const num = item.id.replace('card-', '');
+    const btn = document.getElementById(`compare-btn-${num}`);
+    if (btn) {
+      btn.classList.add('added');
+      btn.querySelector('.compare-btn-text').textContent = 'נוסף להשוואה ✓';
+    }
+    document.getElementById(item.id)?.classList.add('in-comparison');
+  });
+</script>
+
+</body>
+</html>
